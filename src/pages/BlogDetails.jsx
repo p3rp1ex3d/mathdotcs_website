@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
+import remarkGfm from "remark-gfm";
 import rehypeKatex from "rehype-katex";
 
 import { fetchBlogPosts } from "../lib/github";
@@ -180,7 +181,7 @@ if (!blog) {
           data-testid="blog-content"
         >
           <ReactMarkdown
-            remarkPlugins={[remarkMath]}
+            remarkPlugins={[remarkMath, remarkGfm]}
             rehypePlugins={[rehypeKatex]}
           >
             {blog.content}

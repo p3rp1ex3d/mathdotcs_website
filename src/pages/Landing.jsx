@@ -219,78 +219,65 @@
             }}
             >
             Where would you like to
-            scribble first?
+            look first?
             </p>
 
             <ul className="space-y-3 stagger">
             {[
-                {
-                n: "01",
-                label:
-                    "An invitation",
-                page: 2,
-                icon: Sparkles,
-                },
-                {
-                n: "02",
-                label:
-                    "Featured scribbles",
-                page: 3,
-                icon: FileText,
-                },
-                {
-                n: "03",
-                label:
-                    "Latest videos",
-                page: 4,
-                icon: FaYoutube,
-                },
-                {
-                n: "04",
-                label:
-                    "Choose your path",
-                page: 5,
-                icon: Compass,
-                },
-            ].map(
+  {
+    n: "01",
+    label: "An invitation",
+    page: 3,
+    icon: Sparkles,
+  },
+  {
+    n: "02",
+    label: "Featured scribbles",
+    page: 5,
+    icon: FileText,
+  },
+  {
+    n: "03",
+    label: "Latest videos",
+    page: 5,
+    icon: FaYoutube,
+  },
+  {
+    n: "04",
+    label: "Choose your path",
+    page: 6,
+    icon: Compass,
+  },
+].map(
                 ({
                 n,
                 label,
                 page,
                 icon: Icon,
                 }) => (
-                <li key={n}>
-                    <button
-                    onClick={() =>
-                        goToPage(page)
-                    }
-                    className="w-full flex items-center gap-3 text-left p-2 rounded-lg hover:bg-[hsl(var(--ink))/0.06] transition-all group"
-                    >
-                    <span className="sketch-circle text-sm min-w-[2.2rem] h-[2.2rem]">
-                        {n}
-                    </span>
+                <li
+  key={n}
+  className="flex items-center gap-3 p-2"
+>
+  <span className="sketch-circle text-sm min-w-[2.2rem] h-[2.2rem]">
+    {n}
+  </span>
 
-                    <Icon
-                        size={20}
-                        className="text-[hsl(var(--accent))]"
-                    />
+  <Icon
+    size={20}
+    className="text-[hsl(var(--accent))]"
+  />
 
-                    <span
-                        className="text-lg flex-1"
-                        style={{
-                        fontFamily:
-                            "Patrick Hand, cursive",
-                        }}
-                    >
-                        {label}
-                    </span>
-
-                    <ArrowRight
-                        size={16}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    />
-                    </button>
-                </li>
+  <span
+    className="text-lg flex-1"
+    style={{
+      fontFamily:
+        "Patrick Hand, cursive",
+    }}
+  >
+    {label}
+  </span>
+</li>
                 ),
             )}
             </ul>
@@ -399,7 +386,18 @@
             </span>
             </h2>
 
-            <ul className="space-y-3 flex-1 overflow-hidden">
+           <ul
+  className={`
+    space-y-3
+    flex-1
+    pb-16
+    ${
+      isMobile
+        ? "overflow-y-auto pr-1"
+        : "overflow-hidden"
+    }
+  `}
+>
             {featured.map((b) => (
                 <li key={b.slug}>
                 <Link
@@ -450,6 +448,7 @@
 
             <Link
             to="/blogs"
+            
             className="sketch-btn self-start mt-4"
             >
             See all blogs{" "}
@@ -495,7 +494,18 @@
             </span>
             </h2>
 
-            <ul className="space-y-3 flex-1 overflow-hidden">
+            <ul
+  className={`
+    space-y-3
+    flex-1
+    pb-16
+    ${
+      isMobile
+        ? "overflow-y-auto pr-1"
+        : "overflow-hidden"
+    }
+  `}
+>
             {featured.map((v) => (
                 <li key={v.id}>
                 <Link
@@ -791,9 +801,9 @@
     }, []);
 
     const goToPage = (n) =>
-        bookRef.current
-        ?.pageFlip()
-        ?.flip(n);
+  bookRef.current
+    ?.pageFlip()
+    ?.turnToPage(n);
 
     const next = () =>
         bookRef.current
