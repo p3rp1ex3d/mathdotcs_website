@@ -135,13 +135,7 @@
 }
 
 .dark .ruled-bg {
-    background-image: repeating-linear-gradient(
-        to bottom,
-        transparent 0,
-        transparent 31px,
-        hsl(var(--rule) / 0.14) 31px,
-        hsl(var(--rule) / 0.14) 32px
-    );
+    background-image: none;
 }
 
 /* paper grain noise */
@@ -496,4 +490,101 @@
 
 .dark .book-shell {
     filter: drop-shadow(0 20px 40px rgba(0,0,0,0.45));
+}
+
+.mathcs-prose table {
+    width: 100%;
+    margin: 1.4rem 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.9rem;
+    font-family: "Comic Neue", sans-serif;
+    border: 1.8px solid hsl(var(--ink) / 0.28);
+    border-radius: 14px 10px 16px 12px /
+        10px 16px 12px 14px;
+    overflow: hidden;
+    background:
+        linear-gradient(
+            135deg,
+            hsl(var(--paper)) 0%,
+            hsl(var(--paper-2)) 100%
+        );
+    transform: rotate(-0.15deg);
+}
+
+.mathcs-prose th,
+.mathcs-prose td {
+    padding: 0.58rem 0.85rem;
+    border-right: 1.5px solid
+        hsl(var(--ink) / 0.1);
+    border-bottom: 1.5px solid
+        hsl(var(--ink) / 0.08);
+    text-align: left;
+}
+
+.mathcs-prose th:last-child,
+.mathcs-prose td:last-child {
+    border-right: none;
+}
+
+.mathcs-prose tr:last-child td {
+    border-bottom: none;
+}
+
+.mathcs-prose th {
+    font-family: "Patrick Hand", cursive;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+
+    background:
+        repeating-linear-gradient(
+            -2deg,
+            hsl(var(--accent) / 0.06),
+            hsl(var(--accent) / 0.06) 10px,
+            transparent 10px,
+            transparent 20px
+        );
+}
+
+.mathcs-prose tr:nth-child(even) td {
+    background:
+        hsl(var(--ink) / 0.02);
+}
+
+.dark .mathcs-prose table {
+    background:
+        linear-gradient(
+            135deg,
+            #1a1a1d 0%,
+            #141417 100%
+        );
+
+    border-color:
+        rgba(255,255,255,0.12);
+}
+
+.dark .mathcs-prose th,
+.dark .mathcs-prose td {
+    border-right:
+        1px solid rgba(255,255,255,0.06);
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.05);
+}
+
+.dark .mathcs-prose th {
+    background:
+        repeating-linear-gradient(
+            -2deg,
+            rgba(255,255,255,0.035),
+            rgba(255,255,255,0.035) 10px,
+            transparent 10px,
+            transparent 20px
+        );
+}
+
+.dark .mathcs-prose tr:nth-child(even) td {
+    background:
+        rgba(255,255,255,0.015);
 }

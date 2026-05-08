@@ -55,7 +55,7 @@ export default function About() {
           <Link to="/videos" className="sketch-btn">
             <FaYoutube size={16} /> Watch the videos
           </Link>
-          <a href="mailto:hello@mathdotcs.io" className="sketch-btn">
+          <a href="mailto:thecysecchannel@gmail.com" className="sketch-btn">
             <Mail size={16} /> Say hello
           </a>
         </div>
