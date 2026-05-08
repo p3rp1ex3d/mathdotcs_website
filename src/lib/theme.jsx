@@ -4,11 +4,16 @@ const ThemeContext = createContext({ theme: "light", toggle: () => {} });
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    if (typeof window === "undefined") return "light";
-    const stored = localStorage.getItem("mathdotcs-theme");
-    if (stored) return stored;
-    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  });
+  if (typeof window === "undefined") {
+    return "light";
+  }
+
+  const stored = localStorage.getItem(
+    "mathdotcs-theme"
+  );
+
+  return stored || "light";
+});
 
   useEffect(() => {
     const root = document.documentElement;

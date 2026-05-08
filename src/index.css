@@ -135,13 +135,7 @@
 }
 
 .dark .ruled-bg {
-    background-image: repeating-linear-gradient(
-        to bottom,
-        transparent 0,
-        transparent 31px,
-        hsl(var(--rule) / 0.14) 31px,
-        hsl(var(--rule) / 0.14) 32px
-    );
+    background-image: none;
 }
 
 /* paper grain noise */
