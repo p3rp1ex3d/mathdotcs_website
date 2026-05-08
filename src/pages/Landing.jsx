@@ -227,25 +227,25 @@
   {
     n: "01",
     label: "An invitation",
-    page: 3,
+    page: 1,
     icon: Sparkles,
   },
   {
     n: "02",
     label: "Featured scribbles",
-    page: 5,
+    page: 1,
     icon: FileText,
   },
   {
     n: "03",
     label: "Latest videos",
-    page: 5,
+    page: 3,
     icon: FaYoutube,
   },
   {
     n: "04",
     label: "Choose your path",
-    page: 6,
+    page: 3,
     icon: Compass,
   },
 ].map(
@@ -255,10 +255,21 @@
                 page,
                 icon: Icon,
                 }) => (
-                <li
-  key={n}
-  className="flex items-center gap-3 p-2"
->
+                <li key={n}>
+  <button
+    onClick={() => goToPage(page)}
+    className="
+      w-full
+      flex
+      items-center
+      gap-3
+      p-2
+      rounded-xl
+      hover:bg-[hsl(var(--ink))/0.05]
+      transition-all
+      text-left
+    "
+  >
   <span className="sketch-circle text-sm min-w-[2.2rem] h-[2.2rem]">
     {n}
   </span>
@@ -277,6 +288,7 @@
   >
     {label}
   </span>
+  </button>
 </li>
                 ),
             )}
@@ -720,6 +732,7 @@
 
     const [isMobile, setIsMobile] =
         useState(false);
+    const [hasOpened, setHasOpened] = useState(false);
 
     const [remoteBlogs, setRemoteBlogs] =
         useState([]);
@@ -834,10 +847,11 @@
             ref={bookRef}
             width={size.w}
             height={size.h}
+            onFlip={() => setHasOpened(true)}
             size="fixed"
             maxShadowOpacity={0}
             
-            showCover={!isMobile}
+            showCover={!isMobile && hasOpened}
             mobileScrollSupport={
                 true
             }
