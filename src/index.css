@@ -1,0 +1,499 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- THEME TOKENS ---------- */
+@layer base {
+    :root {
+        /* Light: cream notebook paper */
+        --paper: 38 50% 97%;          /* #FDFBF7 */
+        --paper-2: 36 60% 94%;
+        --ink: 215 16% 19%;           /* #2A2F35 */
+        --ink-soft: 213 7% 36%;       /* #545B62 */
+        --rule: 215 35% 50%;          /* graph-paper blue */
+        --accent: 213 38% 47%;        /* #4A6FA5 */
+        --accent-2: 12 75% 61%;       /* #E76F51 */
+        --tape: 48 90% 78%;
+        --shadow: 215 30% 10% / 0.18;
+
+        /* Shadcn semantic tokens (mapped to paper) */
+        --background: 38 50% 97%;
+        --foreground: 215 16% 19%;
+        --card: 0 0% 100%;
+        --card-foreground: 215 16% 19%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 215 16% 19%;
+        --primary: 213 38% 47%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 36 60% 94%;
+        --secondary-foreground: 215 16% 19%;
+        --muted: 36 30% 90%;
+        --muted-foreground: 213 7% 36%;
+        --accent: 12 75% 61%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 215 16% 70%;
+        --input: 215 16% 70%;
+        --ring: 213 38% 47%;
+        --radius: 0.5rem;
+    }
+
+    .dark {
+        /* Dark: chalkboard */
+        --paper: 215 28% 14%;         /* #1A202C */
+        --paper-2: 217 23% 23%;       /* #2D3748 */
+        --ink: 210 40% 98%;           /* #F7FAFC */
+        --ink-soft: 215 14% 70%;      /* #A0AEC0 */
+        --rule: 0 0% 100%;
+        --accent: 53 89% 67%;         /* #F6E05E chalk yellow */
+        --accent-2: 142 50% 67%;      /* #68D391 chalk green */
+        --tape: 53 60% 50% / 0.3;
+        --shadow: 0 0% 0% / 0.5;
+
+        --background: 215 28% 14%;
+        --foreground: 210 40% 98%;
+        --card: 217 23% 23%;
+        --card-foreground: 210 40% 98%;
+        --popover: 217 23% 23%;
+        --popover-foreground: 210 40% 98%;
+        --primary: 53 89% 67%;
+        --primary-foreground: 215 28% 14%;
+        --secondary: 217 23% 28%;
+        --secondary-foreground: 210 40% 98%;
+        --muted: 217 23% 23%;
+        --muted-foreground: 215 14% 70%;
+        --accent: 142 50% 67%;
+        --accent-foreground: 215 28% 14%;
+        --destructive: 0 62% 50%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 215 14% 50%;
+        --input: 215 14% 50%;
+        --ring: 53 89% 67%;
+    }
+}
+
+/* ---------- BASE ---------- */
+@layer base {
+    * {
+        border-color: hsl(var(--border));
+    }
+
+    html, body, #root { height: 100%; }
+
+    body {
+        margin: 0;
+        font-family: \"Comic Neue\", \"Kalam\", system-ui, sans-serif;
+        font-weight: 400;
+        color: hsl(var(--ink));
+        background-color: hsl(var(--paper));
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transition: background-color 400ms ease, color 400ms ease;
+    }
+
+    h1, h2, h3, h4 {
+        font-family: \"Patrick Hand\", \"Caveat\", cursive;
+        letter-spacing: 0.01em;
+        color: hsl(var(--ink));
+    }
+
+    code, pre { font-family: \"JetBrains Mono\", monospace; }
+
+    ::selection {
+        background: hsl(var(--accent) / 0.35);
+        color: hsl(var(--ink));
+    }
+}
+
+/* ---------- PAPER & CHALKBOARD TEXTURES ---------- */
+.paper-bg {
+    background-color: hsl(var(--paper));
+    background-image:
+        linear-gradient(hsl(var(--rule) / 0.10) 1px, transparent 1px),
+        linear-gradient(90deg, hsl(var(--rule) / 0.10) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+}
+
+.dark .paper-bg {
+    background-color: hsl(var(--paper));
+    background-image:
+        radial-gradient(hsl(var(--rule) / 0.08) 1px, transparent 1.2px);
+    background-size: 22px 22px;
+}
+
+.ruled-bg {
+    background-color: hsl(var(--paper));
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 31px,
+        hsl(var(--rule) / 0.18) 31px,
+        hsl(var(--rule) / 0.18) 32px
+    );
+}
+
+.dark .ruled-bg {
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 31px,
+        hsl(var(--rule) / 0.14) 31px,
+        hsl(var(--rule) / 0.14) 32px
+    );
+}
+
+/* paper grain noise */
+.grain::before {
+    content: \"\";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
+}
+.dark .grain::before { mix-blend-mode: screen; opacity: 0.05; }
+
+/* ---------- SKETCH BORDERS / BUTTONS / CARDS ---------- */
+.sketch-border {
+    border: 2px solid hsl(var(--ink));
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    transition: border-radius 350ms cubic-bezier(.2,.9,.3,1.4),
+                transform 250ms ease,
+                box-shadow 250ms ease;
+}
+.sketch-border-alt {
+    border: 2px solid hsl(var(--ink));
+    border-radius: 15px 225px 15px 255px / 225px 15px 255px 15px;
+}
+
+.sketch-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.25rem;
+    font-family: \"Patrick Hand\", cursive;
+    font-size: 1.05rem;
+    color: hsl(var(--ink));
+    background: transparent;
+    border: 2px solid hsl(var(--ink));
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    cursor: pointer;
+    transition: all 250ms cubic-bezier(.2,.9,.3,1.4);
+    box-shadow: 3px 3px 0 0 hsl(var(--ink));
+}
+.sketch-btn:hover {
+    transform: translate(-2px, -2px) rotate(-0.6deg);
+    box-shadow: 6px 6px 0 0 hsl(var(--ink));
+    border-radius: 15px 225px 15px 255px / 225px 15px 255px 15px;
+}
+.sketch-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 0 hsl(var(--ink));
+}
+.sketch-btn-primary {
+    background: hsl(var(--accent) / 0.18);
+}
+
+.sketch-card {
+    position: relative;
+    background: hsl(var(--card));
+    border: 2px solid hsl(var(--ink));
+    border-radius: 12px 24px 14px 22px / 22px 12px 24px 14px;
+    box-shadow: 4px 4px 0 0 hsl(var(--ink));
+    transition: transform 300ms cubic-bezier(.2,.9,.3,1.4),
+                box-shadow 300ms ease,
+                border-radius 350ms ease;
+}
+.sketch-card:hover {
+    transform: translate(-2px, -3px) rotate(-0.5deg);
+    box-shadow: 8px 8px 0 0 hsl(var(--ink));
+}
+
+/* tape strip on top of cards */
+.tape::before {
+    content: \"\";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 80px;
+    height: 22px;
+    background: hsl(var(--tape));
+    opacity: 0.85;
+    box-shadow: 0 1px 2px hsl(var(--shadow));
+    z-index: 2;
+    border-left: 1px dashed hsl(var(--ink) / 0.3);
+    border-right: 1px dashed hsl(var(--ink) / 0.3);
+}
+
+/* hand-drawn underline */
+.hand-underline {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 4px;
+}
+.hand-underline::after {
+    content: \"\";
+    position: absolute;
+    left: -4px;
+    right: -4px;
+    bottom: -2px;
+    height: 8px;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8' preserveAspectRatio='none'><path d='M2 5 Q 50 1, 100 4 T 198 4' stroke='%234A6FA5' stroke-width='2.5' fill='none' stroke-linecap='round'/></svg>") no-repeat center / 100% 100%;
+}
+.dark .hand-underline::after {
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8' preserveAspectRatio='none'><path d='M2 5 Q 50 1, 100 4 T 198 4' stroke='%23F6E05E' stroke-width='2.5' fill='none' stroke-linecap='round'/></svg>") no-repeat center / 100% 100%;
+}
+
+/* hand-drawn circle around a number */
+.sketch-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.4rem;
+    height: 2.4rem;
+    padding: 0 0.6rem;
+    border: 2px solid hsl(var(--accent));
+    border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+    font-family: \"Patrick Hand\", cursive;
+    color: hsl(var(--accent));
+}
+
+/* wobble on hover for icons */
+.wobble:hover { animation: wobble 600ms ease; }
+@keyframes wobble {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-7deg); }
+    75% { transform: rotate(7deg); }
+}
+
+/* page entrance */
+.page-enter {
+    animation: pageIn 600ms cubic-bezier(.2,.9,.3,1.1) both;
+}
+@keyframes pageIn {
+    0% { opacity: 0; transform: translateY(20px) rotate(-1.2deg); }
+    100% { opacity: 1; transform: translateY(0) rotate(0deg); }
+}
+
+.stagger > * { opacity: 0; animation: pageIn 500ms ease both; }
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.15s; }
+.stagger > *:nth-child(3) { animation-delay: 0.25s; }
+.stagger > *:nth-child(4) { animation-delay: 0.35s; }
+.stagger > *:nth-child(5) { animation-delay: 0.45s; }
+.stagger > *:nth-child(6) { animation-delay: 0.55s; }
+.stagger > *:nth-child(7) { animation-delay: 0.65s; }
+.stagger > *:nth-child(8) { animation-delay: 0.75s; }
+.stagger > *:nth-child(9) { animation-delay: 0.85s; }
+
+/* doodle math floaters */
+.doodle {
+    position: absolute;
+    font-family: \"Caveat\", cursive;
+    color: hsl(var(--ink) / 0.18);
+    user-select: none;
+    pointer-events: none;
+    animation: float 8s ease-in-out infinite;
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-10px) rotate(3deg); }
+}
+
+/* react-pageflip wrapper */
+.book-shell {
+    position: relative;
+    margin-inline: auto;
+    filter: drop-shadow(8px 12px 0 hsl(var(--shadow)));
+}
+.book-shell::after {
+    content: "";
+    position: absolute;
+    top: 4%;
+    bottom: 4%;
+    left: 50%;
+    width: 1px;
+    background: linear-gradient(to bottom, hsl(var(--ink) / 0.18), transparent 25%, hsl(var(--ink) / 0.18) 75%);
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* book page common */
+.book-page {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: hsl(var(--card));
+    color: hsl(var(--ink));
+}
+.book-page-inner {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    padding: 2.25rem 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* page side decorations: spine & corner fold */
+.page-spine-left::before {
+    content: \"\";
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 28px;
+    background: linear-gradient(to right, hsl(var(--ink) / 0.18), transparent);
+    pointer-events: none;
+}
+.page-spine-right::before {
+    content: \"\";
+    position: absolute;
+    top: 0; bottom: 0; right: 0;
+    width: 28px;
+    background: linear-gradient(to left, hsl(var(--ink) / 0.18), transparent);
+    pointer-events: none;
+}
+.corner-fold::after {
+    content: \"\";
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, transparent 50%, hsl(var(--ink) / 0.12) 50%);
+    pointer-events: none;
+}
+
+/* page number */
+.page-number {
+    position: absolute;
+    bottom: 12px;
+    font-family: \"Caveat\", cursive;
+    font-size: 1rem;
+    color: hsl(var(--ink-soft));
+}
+.page-number-left { left: 24px; }
+.page-number-right { right: 24px; }
+
+/* search input sketch style */
+.sketch-input {
+    background: transparent;
+    border: 2px solid hsl(var(--ink));
+    border-radius: 200px 12px 200px 12px / 12px 200px 12px 200px;
+    padding: 0.55rem 1rem 0.55rem 2.5rem;
+    font-family: \"Patrick Hand\", cursive;
+    color: hsl(var(--ink));
+    outline: none;
+    width: 100%;
+    transition: border-radius 350ms ease;
+}
+.sketch-input:focus {
+    border-radius: 12px 200px 12px 200px / 200px 12px 200px 12px;
+    box-shadow: 3px 3px 0 0 hsl(var(--accent));
+}
+
+/* tag chip */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.15rem 0.7rem;
+    border: 1.5px solid hsl(var(--ink));
+    border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+    font-family: \"Caveat\", cursive;
+    font-size: 0.95rem;
+    background: hsl(var(--accent) / 0.15);
+    color: hsl(var(--ink));
+    transition: transform 200ms ease;
+}
+.chip:hover { transform: rotate(-2deg) scale(1.05); }
+
+/* highlight marker */
+.marker {
+    background: linear-gradient(180deg, transparent 60%, hsl(var(--accent) / 0.5) 60%);
+    padding: 0 0.15rem;
+}
+
+/* Hide scrollbars on book */
+.book-shell ::-webkit-scrollbar { width: 0; height: 0; }
+
+/* spinning arrow hint */
+.flip-hint {
+    animation: nudge 1.6s ease-in-out infinite;
+}
+@keyframes nudge {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(8px); }
+}
+
+/* graph paper for code/blog body */
+.notebook-content p { margin-bottom: 1rem; line-height: 1.85; }
+.notebook-content h2 { font-size: 1.85rem; margin: 1.5rem 0 0.6rem; }
+.notebook-content h3 { font-size: 1.4rem; margin: 1.2rem 0 0.5rem; }
+.notebook-content pre {
+    background: hsl(var(--paper-2));
+    border: 1.5px dashed hsl(var(--ink) / 0.4);
+    padding: 1rem;
+    overflow-x: auto;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+.notebook-content blockquote {
+    border-left: 4px solid hsl(var(--accent));
+    padding-left: 1rem;
+    font-family: \"Caveat\", cursive;
+    font-size: 1.25rem;
+    color: hsl(var(--ink-soft));
+    margin: 1rem 0;
+}
+
+/* divider squiggle */
+.squiggle {
+    height: 12px;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'><path d='M0 6 Q 25 0, 50 6 T 100 6 T 150 6 T 200 6' stroke='%234A6FA5' stroke-width='2' fill='none' stroke-linecap='round'/></svg>") repeat-x;
+    background-size: 100px 12px;
+}
+.dark .squiggle {
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'><path d='M0 6 Q 25 0, 50 6 T 100 6 T 150 6 T 200 6' stroke='%23F6E05E' stroke-width='2' fill='none' stroke-linecap='round'/></svg>") repeat-x;
+    background-size: 100px 12px;
+}
+
+/* @layer for visual edits */
+@layer base {
+    [data-debug-wrapper=\"true\"] { display: contents !important; }
+}
+
+.mobile-book .stf__parent {
+    box-shadow: none !important;
+}
+
+.mobile-book .stf__block {
+    overflow: visible !important;
+}
+
+
+@media (max-width: 900px) {
+    .page-spine-left::before,
+    .page-spine-left::after,
+    .page-spine-right::before,
+    .page-spine-right::after {
+        display: none !important;
+    }
+
+    .book-page {
+        border-radius: 18px !important;
+    }
+
+    .book-page-inner {
+        padding: 1rem;
+    }
+}
+
+.dark .book-shell {
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.45));
+}
