@@ -588,3 +588,20 @@
     background:
         rgba(255,255,255,0.015);
 }
+
+.mathcs-prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.mathcs-prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.mathcs-prose li {
+  margin: 0.4rem 0;
+  line-height: 1.7;
+}

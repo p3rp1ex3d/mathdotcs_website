@@ -12,6 +12,7 @@ import BlogDetail from "./pages/BlogDetails";
 import Videos from "./pages/Videos";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import InteractivePage from "./pages/InteractivePage";
 
 const Shell = () => {
   const location = useLocation();
@@ -32,6 +33,7 @@ const Shell = () => {
           <Route path="/blogs/:slug" element={<BlogDetail />} />
           <Route path="/videos" element={<Videos />} />
           <Route path="/about" element={<About />} />
+          <Route path="/interactive/:type" element={<InteractivePage />}/>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

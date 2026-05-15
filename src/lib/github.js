@@ -1,3 +1,5 @@
+import sortingLabMarkdown from "../content/local-blogs/sorting-lab.md?raw";
+
 const GITHUB_OWNER =
   import.meta.env.VITE_GITHUB_OWNER || "";
 
@@ -146,6 +148,129 @@ function parseFrontmatter(content) {
   };
 }
 
+function getLocalDevBlogPosts() {
+  if (!import.meta.env.DEV) {
+    return [];
+  }
+
+  try {
+    const {
+      metadata,
+      content,
+    } = parseFrontmatter(
+      // sortingLabMarkdown,
+    );
+
+    return [
+      {
+        slug:
+          "",
+
+        title:
+          metadata.title ||
+          "Untitled",
+
+        category:
+          metadata.category ||
+          "General",
+
+        date:
+          metadata.date ||
+          "",
+
+        excerpt:
+          metadata.excerpt ||
+          "",
+
+        cover:
+          "/algo_intro.png",
+
+        readTime:
+          metadata.readTime ||
+          "2 min read",
+
+        author:
+          metadata.author ||
+          "",
+
+        content,
+
+        interactive:
+          metadata.interactive ===
+          "true",
+
+        interactiveType:
+          metadata.interactiveType ||
+          null,
+      },
+    ];
+  } catch (err) {
+    console.warn(
+      "Local dev blog fixture failed:",
+      err,
+    );
+
+    return [];
+  }
+}
+
+function mergeDevLocalPosts(
+  remoteList,
+) {
+  if (
+    !import.meta.env.DEV
+  ) {
+    return remoteList;
+  }
+
+  const local =
+    getLocalDevBlogPosts();
+
+  if (
+    !local.length
+  ) {
+    return remoteList;
+  }
+
+  const map =
+    new Map(
+      remoteList.map(
+        (p) =>
+          [
+            p.slug,
+
+            p,
+          ],
+      ),
+    );
+
+  for (
+    const p of local
+  ) {
+    map.set(
+      p.slug,
+
+      p,
+    );
+  }
+
+  return Array.from(
+    map.values(),
+  ).sort(
+    (
+      a,
+
+      b,
+    ) =>
+      new Date(
+        b.date,
+      ) -
+      new Date(
+        a.date,
+      ),
+  );
+}
+
 /* -------------------------------- */
 /* Generic GitHub fetch             */
 /* -------------------------------- */
@@ -194,7 +319,9 @@ export async function fetchBlogPosts(
     !GITHUB_OWNER ||
     !GITHUB_REPO
   ) {
-    return [];
+    return mergeDevLocalPosts(
+      [],
+    );
   }
 
   try {
@@ -206,7 +333,9 @@ export async function fetchBlogPosts(
     );
 
     if (!res.ok) {
-      return [];
+      return mergeDevLocalPosts(
+        [],
+      );
     }
 
     const files = await res.json();
@@ -290,6 +419,12 @@ export async function fetchBlogPosts(
                 "",
 
               content: md,
+
+              interactive:
+                metadata.interactive === "true",
+
+                interactiveType:
+                metadata.interactiveType || null,
             };
           } catch (err) {
             console.error(
@@ -304,20 +439,40 @@ export async function fetchBlogPosts(
       ),
     );
 
-    return posts
-      .filter(Boolean)
-      .sort(
-        (a, b) =>
-          new Date(b.date) -
-          new Date(a.date),
-      );
+    const sorted =
+      posts
+
+        .filter(
+          Boolean,
+        )
+
+        .sort(
+          (
+            a,
+
+            b,
+
+          ) =>
+            new Date(
+              b.date,
+            ) -
+            new Date(
+              a.date,
+            ),
+        );
+
+    return mergeDevLocalPosts(
+      sorted,
+    );
   } catch (err) {
     console.error(
       "Failed to fetch blog posts:",
       err,
     );
 
-    return [];
+    return mergeDevLocalPosts(
+      [],
+    );
   }
 }
 
