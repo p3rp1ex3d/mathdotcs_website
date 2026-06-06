@@ -8,7 +8,7 @@ export const PageWrapper = ({ children, testId }) => {
   return (
     <main
       data-testid={testId || "page-wrapper"}
-      className="relative z-10 page-enter px-5 sm:px-10 pt-2 pb-10 max-w-6xl mx-auto w-full"
+      className="relative z-10 page-enter px-4 sm:px-6 lg:px-10 pt-2 pb-10 max-w-6xl mx-auto w-full"
     >
       {children}
     </main>

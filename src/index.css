@@ -85,17 +85,35 @@
         margin: 0;
         font-family: \"Comic Neue\", \"Kalam\", system-ui, sans-serif;
         font-weight: 400;
+        font-size: clamp(14px, 2vw, 16px);
         color: hsl(var(--ink));
         background-color: hsl(var(--paper));
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-smoothing: subpixel-antialiased;
+        -moz-osx-font-smoothing: auto;
+        text-rendering: optimizeLegibility;
+        -webkit-text-size-adjust: 100%;
         transition: background-color 400ms ease, color 400ms ease;
     }
 
-    h1, h2, h3, h4 {
-        font-family: \"Patrick Hand\", \"Caveat\", cursive;
+    h1 {
+        font-family: "Patrick Hand", "Caveat", cursive;
         letter-spacing: 0.01em;
         color: hsl(var(--ink));
+        font-size: clamp(28px, 6vw, 48px);
+    }
+
+    h2 {
+        font-family: "Patrick Hand", "Caveat", cursive;
+        letter-spacing: 0.01em;
+        color: hsl(var(--ink));
+        font-size: clamp(24px, 5vw, 36px);
+    }
+
+    h3, h4 {
+        font-family: "Patrick Hand", "Caveat", cursive;
+        letter-spacing: 0.01em;
+        color: hsl(var(--ink));
+        font-size: clamp(18px, 4vw, 28px);
     }
 
     code, pre { font-family: \"JetBrains Mono\", monospace; }
@@ -169,25 +187,32 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.55rem 1.25rem;
+    padding: clamp(0.4rem, 1.5vw, 0.55rem) clamp(0.75rem, 3vw, 1.25rem);
     font-family: \"Patrick Hand\", cursive;
-    font-size: 1.05rem;
+    font-size: clamp(0.875rem, 2vw, 1.05rem);
     color: hsl(var(--ink));
     background: transparent;
     border: 2px solid hsl(var(--ink));
     border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
     cursor: pointer;
     transition: all 250ms cubic-bezier(.2,.9,.3,1.4);
-    box-shadow: 3px 3px 0 0 hsl(var(--ink));
+    box-shadow: clamp(2px, 0.5vw, 3px) clamp(2px, 0.5vw, 3px) 0 0 hsl(var(--ink));
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 .sketch-btn:hover {
     transform: translate(-2px, -2px) rotate(-0.6deg);
-    box-shadow: 6px 6px 0 0 hsl(var(--ink));
+    box-shadow: clamp(4px, 1vw, 6px) clamp(4px, 1vw, 6px) 0 0 hsl(var(--ink));
     border-radius: 15px 225px 15px 255px / 225px 15px 255px 15px;
 }
 .sketch-btn:active {
     transform: translate(2px, 2px);
     box-shadow: 1px 1px 0 0 hsl(var(--ink));
+}
+@media (hover: none) {
+    .sketch-btn:active {
+        opacity: 0.8;
+    }
 }
 .sketch-btn-primary {
     background: hsl(var(--accent) / 0.18);
@@ -198,14 +223,22 @@
     background: hsl(var(--card));
     border: 2px solid hsl(var(--ink));
     border-radius: 12px 24px 14px 22px / 22px 12px 24px 14px;
-    box-shadow: 4px 4px 0 0 hsl(var(--ink));
+    box-shadow: clamp(2px, 0.5vw, 4px) clamp(2px, 0.5vw, 4px) 0 0 hsl(var(--ink));
     transition: transform 300ms cubic-bezier(.2,.9,.3,1.4),
                 box-shadow 300ms ease,
                 border-radius 350ms ease;
 }
-.sketch-card:hover {
-    transform: translate(-2px, -3px) rotate(-0.5deg);
-    box-shadow: 8px 8px 0 0 hsl(var(--ink));
+@media (hover: hover) {
+    .sketch-card:hover {
+        transform: translate(-2px, -3px) rotate(-0.5deg);
+        box-shadow: clamp(4px, 1vw, 8px) clamp(4px, 1vw, 8px) 0 0 hsl(var(--ink));
+    }
+}
+@media (hover: none) {
+    .sketch-card:active {
+        transform: translate(1px, 1px);
+        box-shadow: 2px 2px 0 0 hsl(var(--ink));
+    }
 }
 
 /* tape strip on top of cards */
@@ -604,4 +637,99 @@
 .mathcs-prose li {
   margin: 0.4rem 0;
   line-height: 1.7;
+}
+
+/* ---------- RESPONSIVE & MOBILE OPTIMIZATIONS ---------- */
+
+/* Mobile-first font sizing and spacing */
+@media (max-width: 640px) {
+    body {
+        font-size: 14px;
+    }
+
+    h1 { font-size: 28px; margin: 1.5rem 0 0.75rem; }
+    h2 { font-size: 24px; margin: 1.25rem 0 0.5rem; }
+    h3 { font-size: 20px; margin: 1rem 0 0.5rem; }
+    h4 { font-size: 18px; margin: 0.75rem 0 0.25rem; }
+
+    .sketch-btn {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.875rem;
+        box-shadow: 2px 2px 0 0 hsl(var(--ink));
+    }
+
+    .sketch-btn:hover {
+        box-shadow: 3px 3px 0 0 hsl(var(--ink));
+    }
+
+    .chip {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Tablet and small laptop */
+@media (min-width: 641px) and (max-width: 1024px) {
+    body {
+        font-size: 15px;
+    }
+
+    h1 { font-size: 36px; }
+    h2 { font-size: 28px; }
+    h3 { font-size: 22px; }
+    h4 { font-size: 18px; }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+    body {
+        font-size: 16px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+    /* Remove hover effects on touch devices */
+    .sketch-border:hover,
+    .sketch-card:hover,
+    .chip:hover {
+        transform: none;
+        box-shadow: inherit;
+    }
+
+    /* Increase touch target size */
+    .sketch-btn,
+    button,
+    a {
+        min-height: 44px;
+        min-width: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Disable tap highlight */
+    a, button {
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+/* High DPI/Retina screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    body {
+        -webkit-font-smoothing: subpixel-antialiased;
+        -moz-osx-font-smoothing: auto;
+    }
+}
+
+/* Landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    h1 { font-size: 24px; margin: 0.75rem 0 0.25rem; }
+    h2 { font-size: 20px; margin: 0.5rem 0; }
+    h3 { font-size: 18px; margin: 0.5rem 0; }
+
+    .sketch-btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+    }
 }
