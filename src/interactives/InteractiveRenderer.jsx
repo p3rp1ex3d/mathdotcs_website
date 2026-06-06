@@ -1,9 +1,6 @@
-import MontyHallInteractive
-from "./MontyHall";
-
-import CakeConjectureInteractive
-from "./CakeConjecture";
-
+import MontyHallInteractive from "./MontyHall";
+import CakeConjectureInteractive from "./CakeConjecture";
+import DinnerTableInteractive from "./DarkDrawer";
 import SortingInteractive from "./Sorting/SortingInteractive";
 
 export default function InteractiveRenderer({
@@ -15,6 +12,9 @@ export default function InteractiveRenderer({
 
     case "cake-conjecture":
       return <CakeConjectureInteractive />;
+
+    case "dark-drawer":
+      return <DinnerTableInteractive />;
 
     case "bubble-sort":
       return <SortingInteractive />;
