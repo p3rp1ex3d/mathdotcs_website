@@ -222,67 +222,86 @@ export default function MontyHallInteractive() {
         </div>
 
         <div className="space-y-4">
-          <div className="sketch-card ruled-bg p-6">
-            <h2
-              className="text-3xl mb-4"
-              style={{
-                fontFamily:
-                  "Patrick Hand, cursive",
-              }}
-            >
-              Experiment Stats
-            </h2>
+        <div className="sketch-card ruled-bg p-6">
+          <h2
+            className="text-3xl mb-4"
+            style={{
+              fontFamily:
+                "Patrick Hand, cursive",
+            }}
+          >
+            Puzzle
+          </h2>
 
-            <div className="space-y-3 text-lg">
-              <div className="flex justify-between">
-                <span>Total Trials</span>
-                <strong>{stats.total}</strong>
-              </div>
+          <p
+            className="leading-relaxed text-[hsl(var(--ink-soft))]"
+            style={{
+              fontFamily:
+                "Comic Neue, sans-serif",
+            }}
+          >
+            You're on a game show with three
+            doors. Behind one is a car and
+            behind the other two are goats.
+            You pick a door, and before it's
+            opened, the host reveals a goat
+            behind one of the remaining doors.
+          </p>
 
-              <div className="flex justify-between">
-                <span>Stay Wins</span>
-                <strong>
-                  {stats.stayWins}
-                </strong>
-              </div>
+          <p
+            className="mt-4 italic text-[hsl(var(--ink-soft))]"
+            style={{
+              fontFamily:
+                "Comic Neue, sans-serif",
+            }}
+          >
+            Should you stay with your original
+            choice, switch to the other unopened
+            door, or does it make no difference?
+          </p>
+        </div>
 
-              <div className="flex justify-between">
-                <span>Switch Wins</span>
-                <strong>
-                  {stats.switchWins}
-                </strong>
-              </div>
+        <div className="sketch-card ruled-bg p-6">
+          <h2
+            className="text-3xl mb-4"
+            style={{
+              fontFamily:
+                "Patrick Hand, cursive",
+            }}
+          >
+            Experiment Stats
+          </h2>
+
+          <div className="space-y-3 text-lg">
+            <div className="flex justify-between">
+              <span>Total Trials</span>
+              <strong>{stats.total}</strong>
+            </div>
+
+            <div className="flex justify-between">
+              <span>Stay Wins</span>
+              <strong>{stats.stayWins}</strong>
+            </div>
+
+            <div className="flex justify-between">
+              <span>Switch Wins</span>
+              <strong>{stats.switchWins}</strong>
             </div>
           </div>
 
-          <div className="sketch-card ruled-bg p-6">
-            <h2
-              className="text-3xl mb-4"
-              style={{
-                fontFamily:
-                  "Patrick Hand, cursive",
-              }}
-            >
-              Insight
-            </h2>
-
-            <p
-              className="leading-relaxed text-[hsl(var(--ink-soft))]"
-              style={{
-                fontFamily:
-                  "Comic Neue, sans-serif",
-              }}
-            >
-              Switching works more often
-              because your first choice
-              had only a 1/3 chance of
-              being correct. The host's
-              reveal transfers the other
-              probability mass onto the
-              remaining unopened door.
-            </p>
+          <div
+            className="mt-5 text-sm text-[hsl(var(--ink-soft))]"
+            style={{
+              fontFamily:
+                "Comic Neue, sans-serif",
+            }}
+          >
+            Try several rounds using both
+            strategies and see if one seems
+            to outperform the other.
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

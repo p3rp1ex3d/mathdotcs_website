@@ -163,8 +163,9 @@ function getLocalDevBlogPosts() {
 
     return [
       {
-        slug:
-          "",
+        // slug:
+        //   metadata.slug ||
+        //   "sorting-lab",
 
         title:
           metadata.title ||
