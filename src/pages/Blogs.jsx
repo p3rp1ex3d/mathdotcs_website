@@ -134,17 +134,27 @@ export default function Blogs() {
             className="sketch-card overflow-hidden group"
           >
             <div className="relative h-44 overflow-hidden border-b-2 border-[hsl(var(--ink))]">
-                <img
+                {b.cover ? (
+                  <img
                     src={b.cover}
                     alt={b.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     loading="lazy"
-                />
+                  />
+                ) : (
+                  <div
+                    className="w-full h-full ruled-bg flex flex-col items-center justify-center text-[hsl(var(--ink-soft))]"
+                    style={{ fontFamily: "Caveat, cursive" }}
+                  >
+                    <span className="text-2xl opacity-80">✎</span>
+                    <span className="text-sm mt-2">margin doodle</span>
+                  </div>
+                )}
 
                 <div className="absolute top-3 right-3 chip !bg-[hsl(var(--paper))] !text-[hsl(var(--ink))]">
-                    <Clock size={12} /> {b.readTime} min
+                  <Clock size={12} /> {b.readTime}
                 </div>
-                </div>
+              </div>
             <div className="p-5">
               <h2 className="text-2xl font-bold leading-tight" style={{ fontFamily: "Patrick Hand, cursive" }}>
                 {b.title}
@@ -164,7 +174,7 @@ export default function Blogs() {
                 </span>
 
                 <span style={{ fontFamily: "Caveat, cursive" }}>
-                    {b.readTime} min read
+                    {b.readTime}
                 </span>
                 </div>
             </div>
