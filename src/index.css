@@ -635,8 +635,21 @@
 }
 
 .mathcs-prose li {
-  margin: 0.4rem 0;
-  line-height: 1.7;
+    margin: 0.4rem 0;
+    line-height: 1.7;
+}
+
+/* Header font consistency: ensure same handwriting font on mobile and desktop */
+header[data-testid="site-header"] {
+        font-family: "Patrick Hand", "Caveat", cursive;
+        -webkit-font-smoothing: subpixel-antialiased;
+        text-rendering: optimizeLegibility;
+}
+
+header[data-testid="site-header"] a,
+header[data-testid="site-header"] .font-bold,
+header[data-testid="site-header"] .sketch-circle {
+        font-family: inherit;
 }
 
 /* ---------- RESPONSIVE & MOBILE OPTIMIZATIONS ---------- */
@@ -732,4 +745,117 @@
         padding: 0.3rem 0.6rem;
         font-size: 0.8rem;
     }
+}
+
+/* Add these responsive fixes to your existing CSS */
+
+/* Ensure all interactive content is properly contained */
+.interactive-container {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.interactive-container > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Canvas responsiveness */
+canvas {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Ensure sketch cards don't overflow on mobile */
+.sketch-card {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Mobile-specific card fixes */
+@media (max-width: 640px) {
+  .sketch-card {
+    border-radius: 12px !important;
+    margin: 0 auto;
+  }
+  
+  /* Prevent any absolute positioning from causing overflow */
+  .sketch-card .relative {
+    overflow: hidden;
+  }
+  
+  /* Ensure all images and canvases are contained */
+  .sketch-card img,
+  .sketch-card canvas,
+  .sketch-card video,
+  .sketch-card iframe {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Better touch scrolling for interactive elements */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+}
+
+/* Ensure the modal backdrop doesn't cause overflow issues */
+.fixed.inset-0 {
+  overflow: hidden;
+}
+
+/* Fix for any content that might be wider than viewport */
+img, canvas, video, iframe, embed, object {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Prevent horizontal scroll on body */
+body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+/* Ensure all containers respect viewport width */
+#root {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Responsive sketch input */
+.sketch-input {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Better responsive grid gaps */
+@media (max-width: 640px) {
+  .grid {
+    gap: 1rem;
+  }
+  
+  .p-3 {
+    padding: 0.75rem;
+  }
+  
+  .p-5 {
+    padding: 1rem;
+  }
+}
+
+/* Ensure tooltips or popups don't cause overflow */
+[class*="absolute"],
+[class*="fixed"] {
+  max-width: 100vw;
+}
+
+/* Make sure the interactive renderer doesn't cause horizontal scroll */
+[data-testid="interactive-page"] {
+  overflow-x: hidden;
 }
