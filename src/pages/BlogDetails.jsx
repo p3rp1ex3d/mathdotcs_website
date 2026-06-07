@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+
 import {
   ArrowLeft,
   ArrowRight,
@@ -18,6 +19,7 @@ import rehypeKatex from "rehype-katex";
 import { fetchBlogPosts } from "../lib/github";
 
 import { PageWrapper } from "../components/PageWrapper";
+import SketchDrawer from "../components/SketchDrawer";
 
 const fmtDate = (s) =>
   new Date(s).toLocaleDateString(undefined, {
@@ -29,34 +31,20 @@ const fmtDate = (s) =>
 export default function BlogDetail() {
   const { slug } = useParams();
 
-  const [posts, setPosts] =
-    useState([]);
-
-  const [blog, setBlog] =
-    useState(null);
-
-  const [loading, setLoading] =
-    useState(true);
+  const [posts, setPosts] = useState([]);
+  const [blog, setBlog] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [sketchOpen, setSketchOpen] = useState(false);
 
   useEffect(() => {
     async function loadBlog() {
       setLoading(true);
-
-      const remote =
-        await fetchBlogPosts();
-
+      const remote = await fetchBlogPosts();
       setPosts(remote || []);
-
-      const found = remote.find(
-        (item) =>
-          item.slug === slug,
-      );
-
+      const found = remote.find((item) => item.slug === slug);
       setBlog(found || null);
-
       setLoading(false);
     }
-
     loadBlog();
   }, [slug]);
 
@@ -65,27 +53,21 @@ export default function BlogDetail() {
       <PageWrapper testId="blog-loading">
         <div className="text-center py-24 flex flex-col items-center">
           <div className="scribble-loader mb-6" />
-
           <p
             className="text-3xl"
             style={{
-              fontFamily:
-                "Patrick Hand, cursive",
+              fontFamily: "Patrick Hand, cursive",
             }}
           >
-            Fetching the scribble
-            for you...
+            Fetching the scribble for you...
           </p>
-
           <p
             className="text-lg text-[hsl(var(--ink-soft))] mt-2"
             style={{
-              fontFamily:
-                "Caveat, cursive",
+              fontFamily: "Caveat, cursive",
             }}
           >
-            turning dusty notebook
-            pages...
+            turning dusty notebook pages...
           </p>
         </div>
       </PageWrapper>
@@ -99,18 +81,12 @@ export default function BlogDetail() {
           <p
             className="text-3xl"
             style={{
-              fontFamily:
-                "Patrick Hand, cursive",
+              fontFamily: "Patrick Hand, cursive",
             }}
           >
-            This scribble seems
-            missing.
+            This scribble seems missing.
           </p>
-
-          <Link
-            to="/blogs/"
-            className="sketch-btn mt-6 inline-flex"
-          >
+          <Link to="/blogs/" className="sketch-btn mt-6 inline-flex">
             <ArrowLeft size={16} />
             Back to notebook
           </Link>
@@ -119,38 +95,39 @@ export default function BlogDetail() {
     );
   }
 
-  const idx = posts.findIndex(
-    (b) => b.slug === slug,
-  );
-
-  const prev =
-    idx > 0
-      ? posts[idx - 1]
-      : null;
-
-  const next =
-    idx < posts.length - 1
-      ? posts[idx + 1]
-      : null;
+  const idx = posts.findIndex((b) => b.slug === slug);
+  const prev = idx > 0 ? posts[idx - 1] : null;
+  const next = idx < posts.length - 1 ? posts[idx + 1] : null;
 
   return (
     <PageWrapper testId="blog-detail-page">
+      <SketchDrawer slug={slug} isOpen={sketchOpen} setIsOpen={setSketchOpen} hideButton={true} />
       <div className="max-w-3xl mx-auto">
-        <Link
-          to="/blogs"
-          data-testid="back-to-blogs"
-          className="sketch-btn mb-6 !text-sm"
-        >
-          <ArrowLeft size={14} />
-          back to the index
-        </Link>
+        <div className="mb-4 flex items-center gap-3">
+          <Link
+            to="/blogs"
+            data-testid="back-to-blogs"
+            className="sketch-btn !text-sm"
+          >
+            <ArrowLeft size={14} />
+            back to the index
+          </Link>
+
+          <button
+            type="button"
+            className="sketch-btn !p-2 ml-auto"
+            onClick={() => setSketchOpen(true)}
+            aria-label="Open sketch for this post"
+          >
+            ✎ Sketch
+          </button>
+        </div>
 
         <header className="mb-6">
           <p
             className="text-sm text-[hsl(var(--ink-soft))] mb-2"
             style={{
-              fontFamily:
-                "Caveat, cursive",
+              fontFamily: "Caveat, cursive",
             }}
           >
             ✎ {fmtDate(blog.date)}
@@ -161,8 +138,7 @@ export default function BlogDetail() {
           <h1
             className="text-4xl sm:text-5xl font-bold leading-tight"
             style={{
-              fontFamily:
-                "Patrick Hand, cursive",
+              fontFamily: "Patrick Hand, cursive",
             }}
           >
             {blog.title}
@@ -171,17 +147,14 @@ export default function BlogDetail() {
           <p
             className="text-lg mt-3 text-[hsl(var(--ink-soft))]"
             style={{
-              fontFamily:
-                "Caveat, cursive",
+              fontFamily: "Caveat, cursive",
             }}
           >
             {blog.excerpt}
           </p>
 
           <div className="flex flex-wrap items-center gap-2 mt-4">
-            <span className="chip">
-              {blog.category}
-            </span>
+            <span className="chip">{blog.category}</span>
           </div>
 
           <div className="flex items-center justify-between mt-4 text-sm text-[hsl(var(--ink-soft))]">
@@ -198,106 +171,109 @@ export default function BlogDetail() {
         </header>
 
         {blog.cover && (
-          <div className="relative mb-8 sketch-card overflow-hidden tape">
-            <img
-              src={blog.cover}
-              alt={blog.title}
-              className="w-full h-64 sm:h-80 object-cover"
-            />
+          <div className="relative mb-12 sketch-card overflow-hidden tape">
+            <div className="w-full overflow-hidden">
+              <img
+                src={blog.cover}
+                alt={blog.title}
+                className="
+                  w-full 
+                  h-auto 
+                  max-h-[400px]
+                  object-contain
+                  sm:max-h-[500px]
+                  md:max-h-[600px]
+                  transition-all
+                  duration-300
+                "
+              />
+            </div>
           </div>
         )}
 
-
         <article
           className="
-          relative
+            relative
             ruled-bg
             p-6
             sm:p-10
             sketch-card
             notebook-content
             mathcs-prose
+            mt-0
           "
           data-testid="blog-content"
         >
           {blog.interactive && (
-  <Link
-    to={`/interactive/${blog.interactiveType}`}
-    state={{
-      fromBlog: blog.slug,
-    }}
-    aria-label="Open interactive"
-    title="Launch interactive"
-    className="
-      absolute
-      top-19
-      right-5
-      z-20
-      group
-    "
-  >
-    <div
-      className="
-        relative
-        flex
-        items-center
-        justify-center
-        w-16
-        h-16
-        rounded-full
-        border-2
-        border-[hsl(var(--ink))]
-        bg-[hsl(var(--paper))]
-        shadow-lg
-      "
-    >
-      {/* pulse rings */}
-      <span
-        className="
-          absolute
-          inset-0
-          rounded-full
-          animate-ping
-          bg-[hsl(var(--accent))]
-          opacity-20
-        "
-      />
-
-      <span
-        className="
-          absolute
-          inset-0
-          rounded-full
-          animate-pulse
-          border-2
-          border-[hsl(var(--accent))]
-          opacity-60
-        "
-      />
-
-      <Play
-        size={30}
-        fill="currentColor"
-        className="
-          relative
-          z-10
-          ml-1
-          text-[hsl(var(--accent))]
-          group-hover:scale-110
-          transition-transform
-        "
-      />
-    </div>
-  </Link>
-)}
+            <Link
+              to={`/interactive/${blog.interactiveType}`}
+              state={{
+                fromBlog: blog.slug,
+              }}
+              aria-label="Open interactive"
+              title="Launch interactive"
+              className="
+                absolute
+                top-19
+                right-5
+                z-20
+                group
+              "
+            >
+              <div
+                className="
+                  relative
+                  flex
+                  items-center
+                  justify-center
+                  w-16
+                  h-16
+                  rounded-full
+                  border-2
+                  border-[hsl(var(--ink))]
+                  bg-[hsl(var(--paper))]
+                  shadow-lg
+                "
+              >
+                <span
+                  className="
+                    absolute
+                    inset-0
+                    rounded-full
+                    animate-ping
+                    bg-[hsl(var(--accent))]
+                    opacity-20
+                  "
+                />
+                <span
+                  className="
+                    absolute
+                    inset-0
+                    rounded-full
+                    animate-pulse
+                    border-2
+                    border-[hsl(var(--accent))]
+                    opacity-60
+                  "
+                />
+                <Play
+                  size={30}
+                  fill="currentColor"
+                  className="
+                    relative
+                    z-10
+                    ml-1
+                    text-[hsl(var(--accent))]
+                    group-hover:scale-110
+                    transition-transform
+                  "
+                />
+              </div>
+            </Link>
+          )}
           <ReactMarkdown
-            remarkPlugins={[
-              remarkMath,
-              remarkGfm,
-            ]}
-            rehypePlugins={[
-              rehypeKatex,
-            ]}
+            remarkPlugins={[remarkMath, remarkGfm]}
+            rehypePlugins={[rehypeKatex]}
           >
             {blog.content}
           </ReactMarkdown>
@@ -309,30 +285,37 @@ export default function BlogDetail() {
             grid
             grid-cols-1
             sm:grid-cols-2
-            gap-4
+            gap-6
+            sm:gap-4
           "
           data-testid="blog-nav"
         >
           {prev ? (
             <Link
               to={`/blogs/${prev.slug}`}
-              className="sketch-card p-4"
+              className="
+                sketch-card 
+                p-4 
+                flex 
+                flex-col 
+                items-start
+                text-left
+                hover:bg-[hsl(var(--paper-dark))]
+                transition-colors
+              "
             >
               <p
-                className="text-xs text-[hsl(var(--ink-soft))]"
+                className="text-xs text-[hsl(var(--ink-soft))] mb-2"
                 style={{
-                  fontFamily:
-                    "Caveat, cursive",
+                  fontFamily: "Caveat, cursive",
                 }}
               >
                 ← previous page
               </p>
-
               <p
-                className="font-bold mt-1"
+                className="font-bold mt-0 leading-tight"
                 style={{
-                  fontFamily:
-                    "Patrick Hand, cursive",
+                  fontFamily: "Patrick Hand, cursive",
                 }}
               >
                 {prev.title}
@@ -346,26 +329,28 @@ export default function BlogDetail() {
             <Link
               to={`/blogs/${next.slug}`}
               className="
-                sketch-card
-                p-4
+                sketch-card 
+                p-4 
+                flex 
+                flex-col 
+                items-end
                 text-right
+                hover:bg-[hsl(var(--paper-dark))]
+                transition-colors
               "
             >
               <p
-                className="text-xs text-[hsl(var(--ink-soft))]"
+                className="text-xs text-[hsl(var(--ink-soft))] mb-2"
                 style={{
-                  fontFamily:
-                    "Caveat, cursive",
+                  fontFamily: "Caveat, cursive",
                 }}
               >
                 next page →
               </p>
-
               <p
-                className="font-bold mt-1"
+                className="font-bold mt-0 leading-tight"
                 style={{
-                  fontFamily:
-                    "Patrick Hand, cursive",
+                  fontFamily: "Patrick Hand, cursive",
                 }}
               >
                 {next.title}

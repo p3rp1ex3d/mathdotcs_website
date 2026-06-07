@@ -25,10 +25,10 @@ export default function Videos() {
       });
   }, []);
 
-const allCategories = useMemo(
-  () => Array.from(new Set(videoList.map((v) => v.category))).sort(),
-  [videoList],
-);
+  const allCategories = useMemo(
+    () => Array.from(new Set(videoList.map((v) => v.category))).sort(),
+    [videoList],
+  );
 
   const filtered = useMemo(() => {
     return videoList.filter((v) => {
@@ -55,18 +55,18 @@ const allCategories = useMemo(
         </p>
       </header>
 
-      {/* Stats */}
+      {/* Stats - Fixed even sizes for all screen sizes */}
       <section className="grid grid-cols-3 gap-3 sm:gap-6 mb-8 stagger" data-testid="video-stats">
         {[
           { v: videoList.length, l: "videos" },
           { v: allCategories.length, l: "categories" },
           { v: "∞", l: "minutes bored" },
         ].map(({ v, l }, i) => (
-          <div key={i} className="sketch-card p-4 text-center">
-            <div className="text-3xl sm:text-4xl font-bold text-[hsl(var(--accent))]" style={{ fontFamily: "Patrick Hand, cursive" }}>
+          <div key={i} className="sketch-card p-2 sm:p-4 text-center w-full">
+            <div className="text-xl sm:text-3xl md:text-4xl font-bold text-[hsl(var(--accent))] whitespace-nowrap" style={{ fontFamily: "Patrick Hand, cursive" }}>
               {v}
             </div>
-            <div className="text-sm text-[hsl(var(--ink-soft))] mt-1" style={{ fontFamily: "Caveat, cursive" }}>{l}</div>
+            <div className="text-xs sm:text-base text-[hsl(var(--ink-soft))] mt-0.5 sm:mt-1 whitespace-nowrap" style={{ fontFamily: "Caveat, cursive" }}>{l}</div>
           </div>
         ))}
       </section>
@@ -111,7 +111,7 @@ const allCategories = useMemo(
             Fetching videos for you ...
           </div>
         )}
-        {filtered.length === 0 && (
+        {!loading && filtered.length === 0 && (
           <div className="col-span-full text-center py-12 text-[hsl(var(--ink-soft))]" style={{ fontFamily: "Caveat, cursive", fontSize: "1.4rem" }}>
             No videos here yet — flip another page ✎
           </div>
@@ -123,13 +123,19 @@ const allCategories = useMemo(
             data-testid={`video-card-${v.id}`}
             className="sketch-card overflow-hidden text-left group"
           >
-            <div className="relative h-44 overflow-hidden border-b-2 border-[hsl(var(--ink))]">
-              <img
-                src={`https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg`}
-                alt={v.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                loading="lazy"
-              />
+            <div className="relative overflow-hidden border-b-2 border-[hsl(var(--ink))]">
+              {/* Fixed responsive thumbnail container */}
+              <div className="relative w-full pt-[56.25%] bg-[hsl(var(--paper))]">
+                <img
+                  src={`https://img.youtube.com/vi/${v.youtubeId}/mqdefault.jpg`}
+                  alt={v.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  onError={(e) => {
+                    e.target.src = `https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg`;
+                  }}
+                />
+              </div>
               <div className="absolute inset-0 flex items-center justify-center bg-[hsl(var(--ink))/0] group-hover:bg-[hsl(var(--ink))/0.25] transition-colors">
                 <span className="sketch-circle bg-[hsl(var(--paper))] !w-14 !h-14 opacity-0 group-hover:opacity-100 transition-opacity" style={{ minWidth: "3.5rem" }}>
                   <Play size={22} strokeWidth={2.5} fill="currentColor" />
@@ -148,14 +154,13 @@ const allCategories = useMemo(
               </p>
               <div className="flex items-center justify-between mt-3 text-xs text-[hsl(var(--ink-soft))]">
                 <span className="flex items-center gap-1">
-                    <Calendar size={12} />
-                    {fmtDate(v.publishedAt)}
+                  <Calendar size={12} />
+                  {fmtDate(v.publishedAt)}
                 </span>
-
                 <span className="chip text-xs">
-                    {v.category}
+                  {v.category}
                 </span>
-                </div>
+              </div>
             </div>
           </button>
         ))}
@@ -198,9 +203,9 @@ const allCategories = useMemo(
               </p>
               <div className="mt-3">
                 <span className="chip text-xs">
-                    {active.category}
+                  {active.category}
                 </span>
-                </div>
+              </div>
             </div>
           </div>
         </div>

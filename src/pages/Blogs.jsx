@@ -27,32 +27,30 @@ export default function Blogs() {
   }, []);
 
   const allCategories = useMemo(
-  () =>
-    posts
-      ? Array.from(new Set(posts.map((b) => b.category))).sort()
-      : [],
-  [posts],
-);
+    () =>
+      posts
+        ? Array.from(new Set(posts.map((b) => b.category))).sort()
+        : [],
+    [posts],
+  );
+
   const filtered = useMemo(() => {
     if (!posts) return [];
     return posts.filter((b) => {
-      const tags = Array.isArray(b.tags) ? b.tags : [];
       const matchesQ =
         !q ||
         b.title.toLowerCase().includes(q.toLowerCase()) ||
         (b.excerpt || "").toLowerCase().includes(q.toLowerCase()) ||
         (b.category || "").toLowerCase().includes(q.toLowerCase());
 
-        const matchesTag = !tag || b.category === tag;
+      const matchesTag = !tag || b.category === tag;
       return matchesQ && matchesTag;
     });
   }, [posts, q, tag]);
 
-  const totalReads = posts ? posts.reduce((acc, b) => acc + (b.views || 0), 0) : 0;
-
   return (
     <PageWrapper testId="blogs-page">
-      <header className="mb-6">
+      <header className="mb-6 px-2 sm:px-0">
         <p className="text-base text-[hsl(var(--ink-soft))]" style={{ fontFamily: "Caveat, cursive" }}>
           Page 01 — The Blogs
         </p>
@@ -65,24 +63,24 @@ export default function Blogs() {
         </p>
       </header>
 
-      {/* Stats strip */}
-      <section className="grid grid-cols-3 gap-3 sm:gap-6 mb-8 stagger" data-testid="blog-stats">
+      {/* Stats strip - Equal width cards */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-6 mb-8 stagger" data-testid="blog-stats">
         {[
           { v: posts?.length ?? 0, l: "blogs" },
           { v: allCategories.length, l: "categories" },
-            { v: "∞", l: "ideas explored" },
+          { v: "∞", l: "ideas explored" },
         ].map(({ v, l }, i) => (
-          <div key={i} className="sketch-card p-4 text-center">
-            <div className="text-3xl sm:text-4xl font-bold text-[hsl(var(--accent))]" style={{ fontFamily: "Patrick Hand, cursive" }}>
+          <div key={i} className="sketch-card p-2 sm:p-4 text-center w-full">
+            <div className="text-xl sm:text-3xl md:text-4xl font-bold text-[hsl(var(--accent))] whitespace-nowrap" style={{ fontFamily: "Patrick Hand, cursive" }}>
               {v}
             </div>
-            <div className="text-sm text-[hsl(var(--ink-soft))] mt-1" style={{ fontFamily: "Caveat, cursive" }}>{l}</div>
+            <div className="text-xs sm:text-base text-[hsl(var(--ink-soft))] mt-0.5 sm:mt-1 whitespace-nowrap" style={{ fontFamily: "Caveat, cursive" }}>{l}</div>
           </div>
         ))}
-      </section>
+      </div>
 
       {/* Search + tag filter */}
-      <section className="mb-6 flex flex-col gap-3" data-testid="blog-filters">
+      <section className="mb-6 flex flex-col gap-3 px-2 sm:px-0" data-testid="blog-filters">
         <div className="relative max-w-xl">
           <Search size={18} strokeWidth={2.5} className="absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(var(--ink-soft))]" />
           <input
@@ -115,7 +113,7 @@ export default function Blogs() {
       </section>
 
       {/* List */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 stagger" data-testid="blog-list">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 stagger px-2 sm:px-0" data-testid="blog-list">
         {loading && (
           <div className="col-span-full text-center py-16 text-[hsl(var(--ink-soft))]" style={{ fontFamily: "Caveat, cursive", fontSize: "1.4rem" }}>
             Fetching scribbles for you…
@@ -131,52 +129,49 @@ export default function Blogs() {
             key={b.slug}
             to={`/blogs/${b.slug}`}
             data-testid={`blog-card-${b.slug}`}
-            className="sketch-card overflow-hidden group"
+            className="sketch-card overflow-hidden group h-full flex flex-col"
           >
-            <div className="relative h-44 overflow-hidden border-b-2 border-[hsl(var(--ink))]">
+            <div className="relative overflow-hidden border-b-2 border-[hsl(var(--ink))]">
+              <div className="w-full bg-[hsl(var(--paper))]">
                 {b.cover ? (
-                  <img
-                    src={b.cover}
-                    alt={b.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
-                  />
+                  <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                    <img
+                      src={b.cover}
+                      alt={b.title}
+                      className="absolute inset-0 w-full h-full object-contain sm:object-cover bg-[hsl(var(--paper))]"
+                      loading="lazy"
+                    />
+                  </div>
                 ) : (
-                  <div
-                    className="w-full h-full ruled-bg flex flex-col items-center justify-center text-[hsl(var(--ink-soft))]"
-                    style={{ fontFamily: "Caveat, cursive" }}
-                  >
+                  <div className="w-full h-36 sm:h-44 md:h-48 ruled-bg flex flex-col items-center justify-center text-[hsl(var(--ink-soft))]">
                     <span className="text-2xl opacity-80">✎</span>
-                    <span className="text-sm mt-2">margin doodle</span>
+                    <span className="text-xs sm:text-sm mt-2">margin doodle</span>
                   </div>
                 )}
-
-                <div className="absolute top-3 right-3 chip !bg-[hsl(var(--paper))] !text-[hsl(var(--ink))]">
-                  <Clock size={12} /> {b.readTime}
-                </div>
               </div>
-            <div className="p-5">
-              <h2 className="text-2xl font-bold leading-tight" style={{ fontFamily: "Patrick Hand, cursive" }}>
+
+              <div className="absolute top-2 right-2 sm:top-3 sm:right-3 chip !bg-[hsl(var(--paper))] !text-[hsl(var(--ink))] text-xs sm:text-sm">
+                <Clock size={12} /> {b.readTime}
+              </div>
+            </div>
+
+            <div className="p-3 sm:p-5 flex-1 flex flex-col">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold leading-tight line-clamp-2" style={{ fontFamily: "Patrick Hand, cursive" }}>
                 {b.title}
               </h2>
-              <p className="text-sm text-[hsl(var(--ink-soft))] mt-2 line-clamp-2" style={{ fontFamily: "Comic Neue, sans-serif" }}>
+              <p className="text-xs sm:text-sm text-[hsl(var(--ink-soft))] mt-2 line-clamp-2 flex-1" style={{ fontFamily: "Comic Neue, sans-serif" }}>
                 {b.excerpt}
               </p>
-              <div className="mt-3">
-                <span className="chip text-xs">
-                    {b.category}
-                </span>
-                </div>
-              <div className="flex items-center justify-between mt-4 text-xs text-[hsl(var(--ink-soft))]">
+              <div className="mt-2 sm:mt-3">
+                <span className="chip text-xs">{b.category}</span>
+              </div>
+              <div className="flex items-center justify-between mt-3 sm:mt-4 text-xs text-[hsl(var(--ink-soft))]">
                 <span className="flex items-center gap-1">
-                    <Calendar size={12} />
-                    {fmtDate(b.date)}
+                  <Calendar size={12} />
+                  {fmtDate(b.date)}
                 </span>
-
-                <span style={{ fontFamily: "Caveat, cursive" }}>
-                    {b.readTime}
-                </span>
-                </div>
+                <span style={{ fontFamily: "Caveat, cursive" }} className="text-xs">{b.readTime}</span>
+              </div>
             </div>
           </Link>
         ))}
