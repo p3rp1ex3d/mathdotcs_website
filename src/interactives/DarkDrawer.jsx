@@ -4,6 +4,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { trackInteractiveLaunch, trackInteractiveComplete } from "../lib/analytics";
 
 const SIZE = 500;
 const CENTER = SIZE / 2;
@@ -52,6 +53,8 @@ export default function DinnerTableInteractive() {
     setActiveNode(0);
     setIsRunning(true);
 
+    try { trackInteractiveLaunch('dark-drawer'); } catch (e) {}
+
     let i = 0;
     intervalRef.current = setInterval(() => {
       i++;
@@ -70,6 +73,7 @@ export default function DinnerTableInteractive() {
         clearInterval(intervalRef.current);
         setVisitedCount(result.visited);
         setIsRunning(false);
+        try { trackInteractiveComplete('dark-drawer'); } catch (e) {}
       }
     }, 450);
   }

@@ -91,6 +91,9 @@ function dedupe(points) {
   return result;
 }
 
+import { useEffect } from "react";
+import { trackInteractiveLaunch, trackEvent } from "../lib/analytics";
+
 export default function CakeConjectureInteractive() {
   const [cuts, setCuts] = useState([]);
   const [regions, setRegions] = useState(1);
@@ -176,6 +179,7 @@ export default function CakeConjectureInteractive() {
 
     setRegions((r) => r + newRegions);
     setCuts((prev) => [...prev, fullCut]);
+    try { trackEvent('interactive_cut', { interactive: 'cake-conjecture' }); } catch (e) {}
     setDrawing(false);
     setStart(null);
     setPreview(null);

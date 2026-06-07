@@ -1,5 +1,6 @@
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { trackInteractiveLaunch, trackInteractiveComplete } from "../lib/analytics";
 
 function randomDoor() {
   return Math.floor(Math.random() * 3);
@@ -82,6 +83,7 @@ export default function MontyHallInteractive() {
           ? s.switchWins + 1
           : s.switchWins,
     }));
+    try { trackInteractiveComplete('monty-hall'); } catch (e) {}
   }
 
   function reset() {
@@ -90,6 +92,10 @@ export default function MontyHallInteractive() {
     setResult(null);
     setCarDoor(randomDoor());
   }
+
+  useEffect(() => {
+    try { trackInteractiveLaunch('monty-hall'); } catch (e) {}
+  }, []);
 
   return (
     <div className="space-y-6">
