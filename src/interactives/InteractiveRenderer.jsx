@@ -2,6 +2,8 @@ import MontyHallInteractive from "./MontyHall";
 import CakeConjectureInteractive from "./CakeConjecture";
 import DinnerTableInteractive from "./DarkDrawer";
 import SortingInteractive from "./Sorting/SortingInteractive";
+import { useEffect } from "react";
+import { trackInteractiveLaunch } from "../lib/analytics";
 
 export default function InteractiveRenderer({ type }) {
   const renderContent = () => {
@@ -24,6 +26,12 @@ export default function InteractiveRenderer({ type }) {
         );
     }
   };
+
+  useEffect(() => {
+    if (type) {
+      try { trackInteractiveLaunch(type); } catch (e) {}
+    }
+  }, [type]);
 
   return (
     <div className="w-full">

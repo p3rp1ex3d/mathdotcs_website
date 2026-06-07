@@ -4,6 +4,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { trackInteractiveLaunch, trackInteractiveComplete } from "../../lib/analytics";
 
 import {
   ArrowRight,
@@ -113,6 +114,17 @@ export default function SortingInteractive() {
   const done = Boolean(
     viz.done,
   );
+
+  useEffect(() => {
+    // track when the sorting interactive is opened
+    try { trackInteractiveLaunch(type || 'bubble-sort'); } catch (e) {}
+  }, [type]);
+
+  useEffect(() => {
+    if (done) {
+      try { trackInteractiveComplete(type || 'bubble-sort'); } catch (e) {}
+    }
+  }, [done, type]);
 
   return (
     <div className="space-y-6">

@@ -25,6 +25,13 @@ export default function Videos() {
       });
   }, []);
 
+  // track video modal open/close
+  useEffect(() => {
+    if (active) {
+      try { window.gtag && window.gtag('event', 'video_open', { videoId: active.youtubeId }); } catch (e) {}
+    }
+  }, [active]);
+
   const allCategories = useMemo(
     () => Array.from(new Set(videoList.map((v) => v.category))).sort(),
     [videoList],

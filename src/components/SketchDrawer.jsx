@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { trackSketchOpen, trackSketchSave, trackSketchClear } from "../lib/analytics";
 
 export default function SketchDrawer({ slug, isOpen, setIsOpen, hideButton }) {
   const [internalOpen, setInternalOpen] = useState(false);
@@ -75,6 +76,13 @@ export default function SketchDrawer({ slug, isOpen, setIsOpen, hideButton }) {
       canvas.removeEventListener('touchcancel', handleTouchEnd);
     };
   }, [open, slug, color, lineWidth]);
+
+  // Track when the sketch modal is opened
+  useEffect(() => {
+    if (open) {
+      try { trackSketchOpen(slug); } catch (e) {}
+    }
+  }, [open, slug]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -176,6 +184,7 @@ export default function SketchDrawer({ slug, isOpen, setIsOpen, hideButton }) {
     const rect = canvas.getBoundingClientRect();
     ctx.clearRect(0, 0, rect.width, rect.height);
     localStorage.removeItem(storageKey);
+    try { trackSketchClear(slug); } catch (e) {}
   }
 
   function save() {
@@ -183,6 +192,7 @@ export default function SketchDrawer({ slug, isOpen, setIsOpen, hideButton }) {
     if (!canvas) return;
     const data = canvas.toDataURL();
     localStorage.setItem(storageKey, data);
+    try { trackSketchSave(slug); } catch (e) {}
   }
 
   return (
