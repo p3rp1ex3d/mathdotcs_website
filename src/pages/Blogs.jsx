@@ -134,7 +134,7 @@ export default function Blogs() {
             <div className="relative overflow-hidden border-b-2 border-[hsl(var(--ink))]">
               <div className="w-full bg-[hsl(var(--paper))]">
                 {b.cover ? (
-                  <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                  <div className="relative w-full" style={{ paddingBottom: '30%' }}>
                     <img
                       src={b.cover}
                       alt={b.title}

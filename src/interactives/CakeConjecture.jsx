@@ -98,41 +98,52 @@ export default function CakeConjectureInteractive() {
   const [start, setStart] = useState(null);
   const [preview, setPreview] = useState(null);
 
-  function mousePos(e) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const scaleX = SIZE / rect.width;
-    const scaleY = SIZE / rect.height;
-    
-    return {
-      x: ((e.clientX - rect.left) * scaleX),
-      y: ((e.clientY - rect.top) * scaleY),
-    };
-  }
+  function getPosition(e) {
+  const rect =
+    e.currentTarget.getBoundingClientRect();
+
+  const clientX = e.clientX;
+  const clientY = e.clientY;
+
+  const scaleX = SIZE / rect.width;
+  const scaleY = SIZE / rect.height;
+
+  return {
+    x: (clientX - rect.left) * scaleX,
+    y: (clientY - rect.top) * scaleY,
+  };
+}
 
   function handleDown(e) {
-    const p = mousePos(e);
+  e.preventDefault();
 
-    const d = Math.hypot(
-      p.x - CENTER,
-      p.y - CENTER
-    );
+  const p = getPosition(e);
 
-    if (d > RADIUS) return;
+  const d = Math.hypot(
+    p.x - CENTER,
+    p.y - CENTER
+  );
 
-    setDrawing(true);
-    setStart(p);
-    setPreview(p);
-  }
+  if (d > RADIUS) return;
+
+  setDrawing(true);
+  setStart(p);
+  setPreview(p);
+}
 
   function handleMove(e) {
-    if (!drawing) return;
-    setPreview(mousePos(e));
-  }
+  e.preventDefault();
+
+  if (!drawing) return;
+
+  setPreview(getPosition(e));
+}
 
   function handleUp(e) {
+    e.preventDefault();
     if (!drawing || !start) return;
 
-    const end = mousePos(e);
+    const end = getPosition(e);
 
     if (
       Math.hypot(
@@ -215,13 +226,14 @@ export default function CakeConjectureInteractive() {
               height={SIZE}
               viewBox={`0 0 ${SIZE} ${SIZE}`}
               className="max-w-full h-auto cursor-crosshair"
-              style={{ maxWidth: '100%', height: 'auto' }}
-              onMouseDown={handleDown}
-              onMouseMove={handleMove}
-              onMouseUp={handleUp}
-              onTouchStart={handleDown}
-              onTouchMove={handleMove}
-              onTouchEnd={handleUp}
+              style={{
+                maxWidth: "100%",
+                height: "auto",
+                touchAction: "none",
+              }}
+              onPointerDown={handleDown}
+              onPointerMove={handleMove}
+              onPointerUp={handleUp}
             >
               <circle
                 cx={CENTER}
