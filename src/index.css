@@ -12,6 +12,7 @@
         --ink-soft: 213 7% 36%;       /* #545B62 */
         --rule: 215 35% 50%;          /* graph-paper blue */
         --accent: 213 38% 47%;        /* #4A6FA5 */
+        --accent-soft: 213 38% 85%;   /* lighter accent for highlights */
         --accent-2: 12 75% 61%;       /* #E76F51 */
         --tape: 48 90% 78%;
         --shadow: 215 30% 10% / 0.18;
@@ -47,6 +48,7 @@
         --ink-soft: 215 14% 70%;      /* #A0AEC0 */
         --rule: 0 0% 100%;
         --accent: 53 89% 67%;         /* #F6E05E chalk yellow */
+        --accent-soft: 53 89% 80%;    /* softer chalk highlight */
         --accent-2: 142 50% 67%;      /* #68D391 chalk green */
         --tape: 53 60% 50% / 0.3;
         --shadow: 0 0% 0% / 0.5;

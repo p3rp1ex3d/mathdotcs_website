@@ -4,8 +4,8 @@ category: Algorithms
 date: 2026-05-10
 excerpt: A gentle introduction to algorithms — the quiet step-by-step ideas hiding beneath recipes, maps, search engines, and almost everything computational around us.
 readTime: 4 min read
-interactive: false
-interactiveType: bubble-sort
+interactive: true
+interactiveType: knight-tour
 difficulty: Beginner
 ---
 
