@@ -2,6 +2,7 @@ import MontyHallInteractive from "./MontyHall";
 import CakeConjectureInteractive from "./CakeConjecture";
 import DinnerTableInteractive from "./DarkDrawer";
 import SortingInteractive from "./Sorting/SortingInteractive";
+import KnightTourInteractive from "./KnightTour";
 import { useEffect } from "react";
 import { trackInteractiveLaunch } from "../lib/analytics";
 
@@ -16,6 +17,8 @@ export default function InteractiveRenderer({ type }) {
         return <DinnerTableInteractive />;
       case "bubble-sort":
         return <SortingInteractive />;
+      case "knight-tour":
+        return <KnightTourInteractive />;
       default:
         return (
           <div className="sketch-card p-8 text-center">
