@@ -202,7 +202,7 @@ export default function KnightTourInteractive() {
       <div className="grid gap-6 items-center lg:grid-cols-[1.2fr_0.8fr]">
         <div className="sketch-card ruled-bg p-6">
           <div className="grid gap-2">
-            <div className="grid grid-cols-8 gap-1 justify-center">
+            <div className="grid grid-cols-8 gap-1 justify-center w-full max-w-[min(480px,100%)] mx-auto">
               {Array.from({ length: BOARD_SIZE }).map((_, row) =>
                 Array.from({ length: BOARD_SIZE }).map((_, col) => {
                   const visitedSquare = visited[row][col];
@@ -226,13 +226,13 @@ export default function KnightTourInteractive() {
                       key={`${row}-${col}`}
                       type="button"
                       onClick={() => handleSquareClick(row, col)}
-                      className={`${base} ${activeClasses} ${ringClasses} aspect-square flex items-center justify-center flex-col p-2`}
+                      className={`${base} ${activeClasses} ${ringClasses} aspect-square flex items-center justify-center flex-col p-1 sm:p-2`}
                     >
                       <span className="text-xs uppercase tracking-[0.12em] text-[hsl(var(--ink-soft))]">
                         {String.fromCharCode(65 + col)}{BOARD_SIZE - row}
                       </span>
                       {isKnight ? (
-                        <span className="text-2xl">♞</span>
+                        <span className="text-xl sm:text-2xl">♞</span>
                       ) : moveIndex >= 0 ? (
                         <span className="text-sm">{moveIndex + 1}</span>
                       ) : (
