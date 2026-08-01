@@ -2,6 +2,14 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, PenTool, Pin, Sparkles } from "lucide-react";
 
+const NOTE_PALETTE = {
+  amber: { light: "hsl(48 90% 86%)", dark: "hsl(42 45% 24%)" },
+  sky: { light: "hsl(199 85% 84%)", dark: "hsl(205 45% 22%)" },
+  rose: { light: "hsl(335 76% 86%)", dark: "hsl(340 42% 24%)" },
+  mint: { light: "hsl(132 42% 84%)", dark: "hsl(150 32% 20%)" },
+  peach: { light: "hsl(24 82% 83%)", dark: "hsl(22 45% 24%)" },
+};
+
 const notes = [
   {
     id: "blackbox",
@@ -12,7 +20,7 @@ const notes = [
     width: "clamp(190px, 22vw, 230px)",
     height: "clamp(160px, 19vw, 200px)",
     rotation: -6,
-    color: "hsl(48 90% 86%)",
+    color: "amber",
     pinned: "tape",
   },
   // {
@@ -24,7 +32,7 @@ const notes = [
   //   width: "clamp(190px, 22vw, 230px)",
   //   height: "clamp(160px, 19vw, 200px)",
   //   rotation: 8,
-  //   color: "hsl(199 85% 84%)",
+  //   color: "sky",
   //   pinned: "pin",
   // },
   // {
@@ -36,7 +44,7 @@ const notes = [
   //   width: "clamp(190px, 22vw, 230px)",
   //   height: "clamp(160px, 19vw, 200px)",
   //   rotation: -5,
-  //   color: "hsl(335 76% 86%)",
+  //   color: "rose",
   //   pinned: "tape",
   // },
   // {
@@ -48,7 +56,7 @@ const notes = [
   //   width: "clamp(190px, 22vw, 230px)",
   //   height: "clamp(160px, 19vw, 200px)",
   //   rotation: 6,
-  //   color: "hsl(132 42% 84%)",
+  //   color: "mint",
   //   pinned: "pin",
   // },
   // {
@@ -60,7 +68,7 @@ const notes = [
   //   width: "clamp(190px, 22vw, 230px)",
   //   height: "clamp(160px, 19vw, 200px)",
   //   rotation: -7,
-  //   color: "hsl(24 82% 83%)",
+  //   color: "peach",
   //   pinned: "tape",
   // },
 ];
@@ -81,7 +89,9 @@ function useIsMobile(breakpoint = 768) {
 
 // A little visual glue that makes a card feel physically stuck to the page —
 // alternates between a strip of washi tape and a corkboard pin per note.
-function Fastener({ kind, color }) {
+// Always reads the resolved --note-active custom property, so it follows
+// whichever theme (light/dark) is active without needing its own color prop.
+function Fastener({ kind }) {
   if (kind === "pin") {
     return (
       <div
@@ -96,7 +106,8 @@ function Fastener({ kind, color }) {
     <div
       className="absolute -top-3 left-1/2 h-6 w-14 -translate-x-1/2 rotate-[-3deg] border border-[hsl(var(--ink))]/25 opacity-90"
       style={{
-        background: `repeating-linear-gradient(115deg, ${color}, ${color} 6px, hsl(var(--paper)/0.35) 6px, hsl(var(--paper)/0.35) 8px)`,
+        background:
+          "repeating-linear-gradient(115deg, var(--note-active), var(--note-active) 6px, hsl(var(--paper)/0.35) 6px, hsl(var(--paper)/0.35) 8px)",
         clipPath: "polygon(4% 10%, 96% 0%, 100% 90%, 0% 100%)",
       }}
       aria-hidden
@@ -109,6 +120,7 @@ function NoteCard({ note, index, isActive, tilt, onEnter, onMove, onLeave, onFoc
   const angleY = isActive ? tilt.rotateY : 0;
   // Gentle stagger so the board doesn't look like a rigid grid.
   const stagger = isMobile ? 0 : (index % 2 === 0 ? -10 : 14);
+  const palette = NOTE_PALETTE[note.color] ?? NOTE_PALETTE.amber;
 
   return (
     <motion.a
@@ -122,6 +134,10 @@ function NoteCard({ note, index, isActive, tilt, onEnter, onMove, onLeave, onFoc
         minHeight: isMobile ? note.height : undefined,
         marginTop: stagger,
         transformOrigin: "center center",
+        // Both tones live here as custom properties; the .notebook-focus /
+        // .dark .notebook-focus rule below picks which one --note-active resolves to.
+        "--note-light": palette.light,
+        "--note-dark": palette.dark,
       }}
       onMouseEnter={onEnter}
       onMouseMove={onMove}
@@ -140,7 +156,7 @@ function NoteCard({ note, index, isActive, tilt, onEnter, onMove, onLeave, onFoc
       <motion.div
         className="note-float relative h-full w-full rounded-[18px] border-2 border-[hsl(var(--ink))] p-3 sm:p-4"
         style={{
-          backgroundColor: note.color,
+          backgroundColor: "var(--note-active)",
           boxShadow: isActive ? "8px 10px 0px hsl(var(--shadow))" : "4px 6px 0px hsl(var(--shadow))",
           transform: `perspective(900px) rotateX(${angleX}deg) rotateY(${angleY}deg) rotate(${note.rotation}deg)`,
           transformStyle: "preserve-3d",
@@ -152,7 +168,7 @@ function NoteCard({ note, index, isActive, tilt, onEnter, onMove, onLeave, onFoc
         }}
         transition={{ type: "spring", stiffness: 220, damping: 18 }}
       >
-        <Fastener kind={note.pinned ?? "tape"} color={note.color} />
+        <Fastener kind={note.pinned ?? "tape"} />
 
         {/* folded corner */}
         <div
@@ -181,7 +197,7 @@ function NoteCard({ note, index, isActive, tilt, onEnter, onMove, onLeave, onFoc
               {note.eyebrow}
             </p>
             <h3
-              className="mt-1 text-[1.15rem] leading-tight sm:text-[1.3rem]"
+              className="mt-1 text-[1.15rem] leading-tight sm:text-[1.3rem] font-bold text-[hsl(var(--ink))]"
               style={{ fontFamily: "Patrick Hand, cursive" }}
             >
               {note.title}
@@ -280,15 +296,9 @@ export default function Explore() {
 
       <div className="pointer-events-none absolute inset-0 paper-bg grain" />
 
-      {/* Toned-down margin doodles — a couple of purposeful annotations instead of stray shapes */}
+      {/* Toned-down margin doodle */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-6 top-10 h-8 w-20 rotate-[-8deg] rounded-full border border-dashed border-[hsl(var(--ink))]/20" />
-        <div className="absolute right-8 top-16 text-lg text-[hsl(var(--ink-soft))]/50" style={{ fontFamily: "Caveat, cursive" }}>
-          ✎ sketching more soon
-        </div>
         <div className="absolute bottom-10 right-12 h-9 w-16 rotate-6 rounded-full border border-dashed border-[hsl(var(--ink))]/20" />
-        <div className="absolute inset-y-6 left-4 w-1.5 rounded-full bg-[hsl(var(--ink))]/10" />
-        <div className="absolute inset-y-6 right-4 w-1.5 rounded-full bg-[hsl(var(--ink))]/10" />
       </div>
 
       {/* Corkboard: centered flex-wrap so it looks intentional whether there's 1 note or 10 */}
@@ -324,6 +334,14 @@ export default function Explore() {
           50% { translate: 0 -4px; }
         }
         .notebook-focus:focus-visible { outline: 2px solid hsl(var(--accent)); outline-offset: 4px; border-radius: 18px; }
+
+        /* Theme-aware note surface: resolves to the light pastel by default,
+           and swaps to the muted dark tone whenever a ".dark" ancestor is present.
+           If this app toggles themes a different way (e.g. [data-theme="dark"]
+           or a media query), change the selector below to match. */
+        .notebook-focus { --note-active: var(--note-light); }
+        .dark .notebook-focus { --note-active: var(--note-dark); }
+
         @media (prefers-reduced-motion: reduce) {
           .note-float { animation: none; }
         }
