@@ -22,7 +22,8 @@
     "react-router-dom": "^7.15.0",
     "rehype-katex": "^7.0.1",
     "remark-gfm": "^4.0.1",
-    "remark-math": "^6.0.0"
+    "remark-math": "^6.0.0",
+    "three": "^0.163.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
