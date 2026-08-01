@@ -33,7 +33,7 @@ const Shell = () => {
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blogs/:slug" element={<BlogDetail />} />
           <Route path="/videos" element={<Videos />} />
-          {/* <Route path="/explore" element={<Explore />} /> */}
+          <Route path="/explore" element={<Explore />} />
           <Route path="/about" element={<About />} />
           <Route path="/interactive/:type" element={<InteractivePage />}/>
           <Route path="*" element={<NotFound />} />
