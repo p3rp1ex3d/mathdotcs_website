@@ -72,6 +72,30 @@ async function resolveGitHubAsset(path, fetchFn = fetch) {
 }
 
 /* -------------------------------- */
+/* Cover image cache + lazy resolve */
+/* -------------------------------- */
+
+const coverCache = new Map(); // path -> data URL
+
+export async function resolvePostCover(post, fetchFn = fetch) {
+  if (!post || !post._coverPath) return post;
+  if (post.cover) return post; // already resolved
+
+  if (coverCache.has(post._coverPath)) {
+    return { ...post, cover: coverCache.get(post._coverPath) };
+  }
+
+  const dataUrl = await resolveGitHubAsset(post._coverPath, fetchFn);
+  coverCache.set(post._coverPath, dataUrl);
+  return { ...post, cover: dataUrl };
+}
+
+// Resolve covers for a batch of posts (e.g. the current page) in parallel
+export async function resolveCoversForPosts(posts, fetchFn = fetch) {
+  return Promise.all(posts.map((p) => resolvePostCover(p, fetchFn)));
+}
+
+/* -------------------------------- */
 /* Frontmatter parser               */
 /* -------------------------------- */
 
@@ -313,6 +337,10 @@ async function fetchGitHubContent(
 /* Blog posts                       */
 /* -------------------------------- */
 
+// NOTE: this returns post metadata WITHOUT resolved cover images.
+// Each post carries a `_coverPath` (raw path in the repo) and `cover: null`.
+// Call resolvePostCover / resolveCoversForPosts to lazily resolve covers
+// only for the posts actually being displayed (e.g. the current page).
 export async function fetchBlogPosts(
   fetchFn = fetch,
 ) {
@@ -405,11 +433,11 @@ export async function fetchBlogPosts(
                 metadata.excerpt ||
                 "",
 
-              cover:
-                await resolveGitHubAsset(
-                metadata.cover || "",
-                fetchFn
-                ),
+              // Cover is resolved lazily — see resolvePostCover /
+              // resolveCoversForPosts below. We just stash the raw
+              // repo path here so it can be fetched on demand.
+              cover: null,
+              _coverPath: metadata.cover || "",
 
               readTime:
                 metadata.readTime ||
@@ -490,11 +518,14 @@ export async function fetchBlogPost(
       fetchFn,
     );
 
-  return (
+  const post =
     posts.find(
       (p) => p.slug === slug,
-    ) || null
-  );
+    ) || null;
+
+  return post
+    ? resolvePostCover(post, fetchFn)
+    : null;
 }
 
 /* -------------------------------- */
@@ -512,7 +543,7 @@ export async function getRelatedArticles(
       fetchFn,
     );
 
-  return posts
+  const related = posts
     .filter(
       (p) =>
         p.category ===
@@ -520,6 +551,8 @@ export async function getRelatedArticles(
         p.slug !== slug,
     )
     .slice(0, limit);
+
+  return resolveCoversForPosts(related, fetchFn);
 }
 
 /* -------------------------------- */
@@ -535,7 +568,9 @@ export async function getLatestPosts(
       fetchFn,
     );
 
-  return posts.slice(0, limit);
+  const latest = posts.slice(0, limit);
+
+  return resolveCoversForPosts(latest, fetchFn);
 }
 
 /* -------------------------------- */

@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Eye, Clock, Heart, Calendar, Tag } from "lucide-react";
-import { fetchBlogPosts } from "../lib/github";
+import { Search, Eye, Clock, Heart, Calendar, Tag, ChevronLeft, ChevronRight } from "lucide-react";
+import { fetchBlogPosts, resolveCoversForPosts } from "../lib/github";
 import { PageWrapper } from "../components/PageWrapper";
+
+const PAGE_SIZE = 8;
 
 const fmtDate = (s) =>
   new Date(s).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
@@ -12,6 +14,9 @@ export default function Blogs() {
   const [q, setQ] = useState("");
   const [tag, setTag] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [pageLoading, setPageLoading] = useState(false);
+  const [pagePosts, setPagePosts] = useState([]);
 
   useEffect(() => {
     fetchBlogPosts()
@@ -47,6 +52,48 @@ export default function Blogs() {
       return matchesQ && matchesTag;
     });
   }, [posts, q, tag]);
+
+  // Reset to page 1 whenever the search/filter changes the result set
+  useEffect(() => {
+    setPage(1);
+  }, [q, tag]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+
+  const pageSlice = useMemo(
+    () => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [filtered, page],
+  );
+
+  // Resolve cover images only for the posts on the current page
+  useEffect(() => {
+    let cancelled = false;
+
+    if (pageSlice.length === 0) {
+      setPagePosts([]);
+      return;
+    }
+
+    setPageLoading(true);
+
+    resolveCoversForPosts(pageSlice)
+      .then((resolved) => {
+        if (!cancelled) setPagePosts(resolved);
+      })
+      .finally(() => {
+        if (!cancelled) setPageLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [pageSlice]);
+
+  const goToPage = (p) => {
+    const clamped = Math.min(Math.max(1, p), totalPages);
+    setPage(clamped);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <PageWrapper testId="blogs-page">
@@ -124,7 +171,12 @@ export default function Blogs() {
             No scribbles match your search. Try erasing some words ✎
           </div>
         )}
-        {filtered.map((b, i) => (
+        {!loading && filtered.length > 0 && pageLoading && (
+          <div className="col-span-full text-center py-8 text-[hsl(var(--ink-soft))]" style={{ fontFamily: "Caveat, cursive", fontSize: "1.2rem" }}>
+            Loading this page's doodles…
+          </div>
+        )}
+        {!loading && !pageLoading && pagePosts.map((b) => (
           <Link
             key={b.slug}
             to={`/blogs/${b.slug}`}
@@ -176,6 +228,40 @@ export default function Blogs() {
           </Link>
         ))}
       </section>
+
+      {/* Pagination controls */}
+      {!loading && filtered.length > PAGE_SIZE && (
+        <nav
+          className="flex items-center justify-center gap-2 mt-8 px-2 sm:px-0"
+          data-testid="blog-pagination"
+        >
+          <button
+            onClick={() => goToPage(page - 1)}
+            disabled={page === 1}
+            data-testid="pagination-prev"
+            className="chip disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft size={14} /> prev
+          </button>
+
+          <span
+            className="text-sm px-2 text-[hsl(var(--ink-soft))]"
+            style={{ fontFamily: "Caveat, cursive" }}
+            data-testid="pagination-status"
+          >
+            page {page} of {totalPages}
+          </span>
+
+          <button
+            onClick={() => goToPage(page + 1)}
+            disabled={page === totalPages}
+            data-testid="pagination-next"
+            className="chip disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            next <ChevronRight size={14} />
+          </button>
+        </nav>
+      )}
     </PageWrapper>
   );
 }
