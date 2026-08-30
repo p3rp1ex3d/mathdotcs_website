@@ -138,7 +138,16 @@ const Page = forwardRef(function Page({ side = "right", number, children, isMobi
         ...style,
       }}
     >
-      <div className={`book-page-inner ${isMobile ? "px-4 py-5" : ""}`}>{children}</div>
+      <div
+        className={`book-page-inner ${isMobile ? "px-4 py-5 book-page-inner-mobile" : ""}`}
+        style={
+          isMobile
+            ? { overflowY: "auto", WebkitOverflowScrolling: "touch", height: "100%", boxSizing: "border-box" }
+            : undefined
+        }
+      >
+        {children}
+      </div>
       {number != null && (
         <span className={`page-number ${side === "left" ? "page-number-left" : "page-number-right"}`}>— {number} —</span>
       )}
@@ -273,18 +282,20 @@ const FeaturedBlogsPage = forwardRef(function FeaturedBlogsPage({ blogs = [], is
             Worth <span className="hand-underline">reading</span>
           </h2>
         </div>
-        <button
-          ref={shuffleRef}
-          disabled={blogs.length <= 2}
-          aria-label="Show a different pair of posts"
-          title="Surprise me"
-          className="shuffle-glyph"
-        >
-          <Dices size={22} />
-        </button>
+        {!isMobile && (
+          <button
+            ref={shuffleRef}
+            disabled={blogs.length <= 2}
+            aria-label="Show a different pair of posts"
+            title="Surprise me"
+            className="shuffle-glyph"
+          >
+            <Dices size={22} />
+          </button>
+        )}
       </div>
       <p className="text-xs text-[hsl(var(--ink-soft))] mb-4" style={{ fontFamily: "Comic Neue, sans-serif" }}>
-        Two picks, reshuffled every visit if you shake the dice.
+        {isMobile ? "Two picks from the notebook." : "Two picks, reshuffled every visit if you shake the dice."}
       </p>
 
       {picks.length === 0 ? (
@@ -319,12 +330,13 @@ const FeaturedBlogsPage = forwardRef(function FeaturedBlogsPage({ blogs = [], is
               </Link>
             </li>
           ))}
-        </ul>
-      )}
-
-      <Link to="/blogs" className="sketch-btn self-start mt-4">
+          <Link to="/blogs" className="sketch-btn self-start mt-2">
         All the blogs <ArrowRight size={16} />
       </Link>
+        </ul>
+      )
+      
+      }
     </Page>
   );
 });
@@ -341,18 +353,20 @@ const FeaturedVideosPage = forwardRef(function FeaturedVideosPage({ videos = [],
             Worth <span className="marker">watching</span>
           </h2>
         </div>
-        <button
-          ref={shuffleRef}
-          disabled={videos.length <= 2}
-          aria-label="Show a different pair of videos"
-          title="Surprise me"
-          className="shuffle-glyph"
-        >
-          <Dices size={22} />
-        </button>
+        {!isMobile && (
+          <button
+            ref={shuffleRef}
+            disabled={videos.length <= 2}
+            aria-label="Show a different pair of videos"
+            title="Surprise me"
+            className="shuffle-glyph"
+          >
+            <Dices size={22} />
+          </button>
+        )}
       </div>
       <p className="text-xs text-[hsl(var(--ink-soft))] mb-4" style={{ fontFamily: "Comic Neue, sans-serif" }}>
-        Same dice as the last page — try it here too.
+        {isMobile ? "Two picks from the notebook." : "Same dice as the last page — try it here too."}
       </p>
 
       {picks.length === 0 ? (
@@ -391,12 +405,14 @@ const FeaturedVideosPage = forwardRef(function FeaturedVideosPage({ videos = [],
               </Link>
             </li>
           ))}
-        </ul>
-      )}
-
+          
       <Link to="/videos" className="sketch-btn self-start mt-4">
         All the videos <ArrowRight size={16} />
       </Link>
+        </ul>
+        
+      )}
+
     </Page>
   );
 });
@@ -542,11 +558,15 @@ export default function Landing() {
 
     const update = () => {
       const w = window.innerWidth;
+      const vh = window.innerHeight;
       const mobile = w < 900;
       setIsMobile(mobile);
       if (mobile) {
         const pageW = Math.min(w - 24, 420);
-        setSize({ w: pageW, h: Math.round(pageW * 1.35) });
+        const reservedChrome = 175;
+        const idealH = Math.round(pageW * 1.7);
+        const maxH = Math.max(vh - reservedChrome, 480);
+        setSize({ w: pageW, h: Math.min(idealH, maxH) });
       } else {
         const pageW = Math.min(Math.floor((w - 160) / 2), 480);
         setSize({ w: pageW, h: Math.round(pageW * 1.32) });
@@ -581,6 +601,10 @@ export default function Landing() {
           ref={bookRef}
           width={size.w}
           height={size.h}
+          minWidth={200}
+          maxWidth={600}
+          minHeight={400}
+          maxHeight={2000}
           size="fixed"
           maxShadowOpacity={0.3}
           showCover={true}
@@ -666,26 +690,50 @@ export default function Landing() {
           width: 100%;
           max-width: 420px;
           flex-direction: row;
-          flex-wrap: wrap;
+          flex-wrap: nowrap;
           justify-content: center;
           margin: 0 0 0.85rem;
-          gap: 8px;
+          gap: 6px;
           z-index: auto;
         }
         .notebook-tabs-mobile .notebook-tab {
           writing-mode: horizontal-tb;
           border: 1px solid rgba(0,0,0,0.15);
           border-radius: 999px;
-          padding: 0.45rem 1rem;
-          font-size: 0.8rem;
+          padding: 0.4rem 0;
+          font-size: 0.7rem;
           box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-          min-height: 34px;
+          min-height: 32px;
+          flex: 1 1 0;
+          min-width: 0;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .notebook-tabs-mobile .notebook-tab span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          padding: 0 2px;
         }
         .notebook-tabs-mobile .notebook-tab:hover,
         .notebook-tabs-mobile .notebook-tab:active {
           transform: translateY(-2px);
-          padding-right: 1rem;
         }
+
+        .book-page-inner-mobile {
+          scrollbar-width: thin;
+          scrollbar-color: transparent transparent;
+        }
+        .book-page-inner-mobile:hover,
+        .book-page-inner-mobile:active {
+          scrollbar-color: rgba(0,0,0,0.15) transparent;
+        }
+        .book-page-inner-mobile::-webkit-scrollbar { width: 3px; }
+        .book-page-inner-mobile::-webkit-scrollbar-thumb { background: transparent; border-radius: 3px; }
+        .book-page-inner-mobile:hover::-webkit-scrollbar-thumb,
+        .book-page-inner-mobile:active::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); }
       `}</style>
     </div>
   );
