@@ -4,7 +4,7 @@ import { Search, Clock, Calendar, Tag, ChevronLeft, ChevronRight, ArrowRight } f
 import { fetchBlogPosts, resolveCoversForPosts } from "../lib/github";
 import { PageWrapper } from "../components/PageWrapper";
 
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 9;
 
 const fmtDate = (s) =>
   new Date(s).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
