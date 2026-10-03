@@ -27,7 +27,7 @@ const notes = [
     id: "dimensions",
     title: "Dimensions",
     eyebrow: "Topology",
-    description: "https://dimensions.mathdotcs.com/",
+    description: "Beyond what you see. Explore what could be.",
     to: "https://dimensions.mathdotcs.com/",
     width: "clamp(190px, 22vw, 230px)",
     height: "clamp(160px, 19vw, 200px)",
